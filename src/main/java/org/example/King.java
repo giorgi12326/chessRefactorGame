@@ -1,6 +1,5 @@
 package org.example;
 
-import javax.swing.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,8 +15,8 @@ LinkedList<Square> legalMoves = new LinkedList<Square>();
         
         Square[][] board = b.getSquareArray();
         
-        int x = this.getPosition().getXNum();
-        int y = this.getPosition().getYNum();
+        int x = this.getSquare().getXNum();
+        int y = this.getSquare().getYNum();
         
         for (int i = 1; i > -2; i--) {
             for (int k = 1; k > -2; k--) {

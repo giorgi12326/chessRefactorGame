@@ -36,8 +36,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     // List of pieces and whether they are movable
     public final LinkedList<Piece> Bpieces;
     public final LinkedList<Piece> Wpieces;
-    public List<Square> movable;
-    
+
     private boolean whiteTurn;
 
     private Piece currPiece;
@@ -174,13 +173,12 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                 return;
             sq.setDisplay(false);
         }
-        repaint();
+        repaint();//?
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         Square sq = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
-
         if (currPiece != null) {
             if (currPiece.getColor() == 0 && whiteTurn)
                 return;
@@ -188,8 +186,8 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                 return;
 
             List<Square> legalMoves = currPiece.getLegalMoves(this);
-            movable = cmd.getAllowableSquares(whiteTurn);
-
+            List<Square> movable = cmd.getAllowableSquares(whiteTurn);
+            System.out.println(movable.size());
             if (legalMoves.contains(sq) && movable.contains(sq)
                     && cmd.testMove(currPiece, sq)) {
                 sq.setDisplay(true);
@@ -215,7 +213,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                 }
 
             } else {
-                currPiece.getPosition().setDisplay(true);
+                currPiece.getSquare().setDisplay(true);
                 currPiece = null;
             }
         }

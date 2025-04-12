@@ -14,8 +14,8 @@ public class Knight extends Piece {
         LinkedList<Square> legalMoves = new LinkedList<Square>();
         Square[][] board = b.getSquareArray();
         
-        int x = this.getPosition().getXNum();
-        int y = this.getPosition().getYNum();
+        int x = this.getSquare().getXNum();
+        int y = this.getSquare().getYNum();
         
         for (int i = 2; i > -3; i--) {
             for (int k = 2; k > -3; k--) {

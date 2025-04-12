@@ -10,6 +10,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 public abstract class Piece {
+    //1 for white 0 for black
     private final int color;
     private Square currentSquare;
     private BufferedImage img;
@@ -41,7 +42,7 @@ public abstract class Piece {
         return true;
     }
     
-    public Square getPosition() {
+    public Square getSquare() {
         return currentSquare;
     }
     

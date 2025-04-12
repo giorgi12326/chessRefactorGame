@@ -1,10 +1,6 @@
 package org.example;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
@@ -22,7 +18,7 @@ public class CheckmateDetector {
     private final LinkedList<Square> squares;
     private final King bk;
     private final King wk;
-    private final HashMap<Square,List<Piece>> wMoves;
+    private final HashMap<Square,List<Piece>> wMoves;// list of pieces that can move to Square
     private final HashMap<Square,List<Piece>> bMoves;
     
     /**
@@ -66,6 +62,7 @@ public class CheckmateDetector {
     
     /**
      * Updates the object with the current situation of the game.
+     * clears hashmaps and movableSquares and adds in new hashmap values.
      */
     public void update() {
         // Iterators through pieces
@@ -80,15 +77,14 @@ public class CheckmateDetector {
         for (List<Piece> pieces : bMoves.values()) {
             pieces.removeAll(pieces);
         }
-        
         movableSquares.removeAll(movableSquares);
-        
+
         // Add each move white and black can make to map
         while (wIter.hasNext()) {
             Piece p = wIter.next();
 
             if (!p.getClass().equals(King.class)) {
-                if (p.getPosition() == null) {
+                if (p.getSquare() == null) {
                     wIter.remove();
                     continue;
                 }
@@ -106,7 +102,7 @@ public class CheckmateDetector {
             Piece p = bIter.next();
             
             if (!p.getClass().equals(King.class)) {
-                if (p.getPosition() == null) {
+                if (p.getSquare() == null) {
                     wIter.remove();
                     continue;
                 }
@@ -127,7 +123,7 @@ public class CheckmateDetector {
      */
     public boolean blackInCheck() {
         update();
-        Square sq = bk.getPosition();
+        Square sq = bk.getSquare();
         if (wMoves.get(sq).isEmpty()) {
             movableSquares.addAll(squares);
             return false;
@@ -140,7 +136,7 @@ public class CheckmateDetector {
      */
     public boolean whiteInCheck() {
         update();
-        Square sq = wk.getPosition();
+        Square sq = wk.getSquare();
         if (bMoves.get(sq).isEmpty()) {
             movableSquares.addAll(squares);
             return false;
@@ -160,7 +156,7 @@ public class CheckmateDetector {
         if (canEvade(wMoves, bk)) checkmate = false;
         
         // If no, check if threat can be captured
-        List<Piece> threats = wMoves.get(bk.getPosition());
+        List<Piece> threats = wMoves.get(bk.getSquare());
         if (canCapture(bMoves, threats, bk)) checkmate = false;
         
         // If no, check if threat can be blocked
@@ -183,7 +179,7 @@ public class CheckmateDetector {
         if (canEvade(bMoves, wk)) checkmate = false;
         
         // If no, check if threat can be captured
-        List<Piece> threats = bMoves.get(wk.getPosition());
+        List<Piece> threats = bMoves.get(wk.getSquare());
         if (canCapture(wMoves, threats, wk)) checkmate = false;
         
         // If no, check if threat can be blocked
@@ -217,31 +213,19 @@ public class CheckmateDetector {
     
     /*
      * Helper method to determine if the threatening piece can be captured.
+     * //
+     * movableSquares added for each of the piece that can save from check with capture
+     * but old code added only up to 2/TODO
      */
     private boolean canCapture(Map<Square,List<Piece>> poss,
                                List<Piece> threats, King k) {
-        
         boolean capture = false;
-        if (threats.size() == 1) {
-            Square sq = threats.get(0).getPosition();
-            
-            if (k.getLegalMoves(board).contains(sq)) {
-                movableSquares.add(sq);
-                if (testMove(k, sq)) {
+        for (Piece threat:threats) {
+            for (Piece defendingPiece:poss.get(threat.getSquare())) {
+                List<Square> legalMoves = defendingPiece.getLegalMoves(board);
+                if(legalMoves.contains(threat.getSquare()) && testMove(defendingPiece,threat.getSquare())) {
+                    movableSquares.add(threat.getSquare());
                     capture = true;
-                }
-            }
-            
-            List<Piece> caps = poss.get(sq);
-            ConcurrentLinkedDeque<Piece> capturers = new ConcurrentLinkedDeque<Piece>();
-            capturers.addAll(caps);
-            
-            if (!capturers.isEmpty()) {
-                movableSquares.add(sq);
-                for (Piece p : capturers) {
-                    if (testMove(p, sq)) {
-                        capture = true;
-                    }
                 }
             }
         }
@@ -257,8 +241,8 @@ public class CheckmateDetector {
         boolean blockable = false;
         
         if (threats.size() == 1) {
-            Square ts = threats.get(0).getPosition();
-            Square ks = k.getPosition();
+            Square ts = threats.get(0).getSquare();
+            Square ks = k.getSquare();
             Square[][] brdArray = board.getSquareArray();
             
             if (ks.getXNum() == ts.getXNum()) {
@@ -411,15 +395,15 @@ public class CheckmateDetector {
      * Method to get a list of allowable squares that the player can move.
      * Defaults to all squares, but limits available squares if player is in
      * check.
-     * @param b boolean representing whether it's white player's turn (if yes,
+     * @param whiteMove boolean representing whether it's white player's turn (if yes,
      * true)
      * @return List of squares that the player can move into.
      */
-    public List<Square> getAllowableSquares(boolean b) {
-        movableSquares.removeAll(movableSquares);
-        if (whiteInCheck()) {
+    public List<Square> getAllowableSquares(boolean whiteMove) {
+//        movableSquares.removeAll(movableSquares);
+        if (whiteInCheck() && !whiteMove) {
             whiteCheckMated();
-        } else if (blackInCheck()) {
+        } else if (blackInCheck() && whiteMove) {
             blackCheckMated();
         }
         return movableSquares;
@@ -436,11 +420,11 @@ public class CheckmateDetector {
         Piece c = sq.getOccupyingPiece();
         
         boolean movetest = true;
-        Square init = p.getPosition();
-        
+        Square init = p.getSquare();
+
         p.move(sq);
         update();
-        
+
         if (p.getColor() == 0 && blackInCheck()) movetest = false;
         else if (p.getColor() == 1 && whiteInCheck()) movetest = false;
         
