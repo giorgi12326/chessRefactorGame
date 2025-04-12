@@ -187,7 +187,6 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
             List<Square> legalMoves = currPiece.getLegalMoves(this);
             List<Square> movable = cmd.getAllowableSquares(whiteTurn);
-            System.out.println(movable.size());
             if (legalMoves.contains(sq) && movable.contains(sq)
                     && cmd.testMove(currPiece, sq)) {
                 sq.setDisplay(true);

@@ -237,30 +237,28 @@ public class CheckmateDetector {
      * Helper method to determine if check can be blocked by a piece.
      */
     private boolean canBlock(List<Piece> threats,
-                             Map <Square,List<Piece>> blockMoves, King k) {
+                             Map <Square,List<Piece>> blockPieces, King k) {
         boolean blockable = false;
         
         if (threats.size() == 1) {
-            Square ts = threats.get(0).getSquare();
-            Square ks = k.getSquare();
-            Square[][] brdArray = board.getSquareArray();
-            
-            if (ks.getXNum() == ts.getXNum()) {
-                int max = Math.max(ks.getYNum(), ts.getYNum());
-                int min = Math.min(ks.getYNum(), ts.getYNum());
+            Square threatSquare = threats.getFirst().getSquare();
+            Square kingSquare = k.getSquare();
+            Square[][] boardArray = board.getSquareArray();
+            if (kingSquare.getXNum() == threatSquare.getXNum()) {
+                int max = Math.max(kingSquare.getYNum(), threatSquare.getYNum());
+                int min = Math.min(kingSquare.getYNum(), threatSquare.getYNum());
                 
                 for (int i = min + 1; i < max; i++) {
                     List<Piece> blks = 
-                            blockMoves.get(brdArray[i][ks.getXNum()]);
-                    ConcurrentLinkedDeque<Piece> blockers = 
-                            new ConcurrentLinkedDeque<Piece>();
-                    blockers.addAll(blks);
+                            blockPieces.get(boardArray[i][kingSquare.getXNum()]);
+                    ConcurrentLinkedDeque<Piece> blockers =
+                            new ConcurrentLinkedDeque<>(blks);
                     
                     if (!blockers.isEmpty()) {
-                        movableSquares.add(brdArray[i][ks.getXNum()]);
+                        movableSquares.add(boardArray[i][kingSquare.getXNum()]);
                         
                         for (Piece p : blockers) {
-                            if (testMove(p,brdArray[i][ks.getXNum()])) {
+                            if (testMove(p,boardArray[i][kingSquare.getXNum()])) {
                                 blockable = true;
                             }
                         }
@@ -269,23 +267,23 @@ public class CheckmateDetector {
                 }
             }
             
-            if (ks.getYNum() == ts.getYNum()) {
-                int max = Math.max(ks.getXNum(), ts.getXNum());
-                int min = Math.min(ks.getXNum(), ts.getXNum());
+            if (kingSquare.getYNum() == threatSquare.getYNum()) {
+                int max = Math.max(kingSquare.getXNum(), threatSquare.getXNum());
+                int min = Math.min(kingSquare.getXNum(), threatSquare.getXNum());
                 
                 for (int i = min + 1; i < max; i++) {
                     List<Piece> blks = 
-                            blockMoves.get(brdArray[ks.getYNum()][i]);
+                            blockPieces.get(boardArray[kingSquare.getYNum()][i]);
                     ConcurrentLinkedDeque<Piece> blockers = 
                             new ConcurrentLinkedDeque<Piece>();
                     blockers.addAll(blks);
                     
                     if (!blockers.isEmpty()) {
                         
-                        movableSquares.add(brdArray[ks.getYNum()][i]);
+                        movableSquares.add(boardArray[kingSquare.getYNum()][i]);
                         
                         for (Piece p : blockers) {
-                            if (testMove(p, brdArray[ks.getYNum()][i])) {
+                            if (testMove(p, boardArray[kingSquare.getYNum()][i])) {
                                 blockable = true;
                             }
                         }
@@ -293,94 +291,30 @@ public class CheckmateDetector {
                     }
                 }
             }
-            
-            Class<? extends Piece> tC = threats.get(0).getClass();
-            
-            if (tC.equals(Queen.class) || tC.equals(Bishop.class)) {
-                int kX = ks.getXNum();
-                int kY = ks.getYNum();
-                int tX = ts.getXNum();
-                int tY = ts.getYNum();
-                
-                if (kX > tX && kY > tY) {
-                    for (int i = tX + 1; i < kX; i++) {
-                        tY++;
-                        List<Piece> blks = 
-                                blockMoves.get(brdArray[tY][i]);
-                        ConcurrentLinkedDeque<Piece> blockers = 
-                                new ConcurrentLinkedDeque<Piece>();
-                        blockers.addAll(blks);
-                        
-                        if (!blockers.isEmpty()) {
-                            movableSquares.add(brdArray[tY][i]);
-                            
-                            for (Piece p : blockers) {
-                                if (testMove(p, brdArray[tY][i])) {
-                                    blockable = true;
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                if (kX > tX && tY > kY) {
-                    for (int i = tX + 1; i < kX; i++) {
-                        tY--;
-                        List<Piece> blks = 
-                                blockMoves.get(brdArray[tY][i]);
-                        ConcurrentLinkedDeque<Piece> blockers = 
-                                new ConcurrentLinkedDeque<Piece>();
-                        blockers.addAll(blks);
-                        
-                        if (!blockers.isEmpty()) {
-                            movableSquares.add(brdArray[tY][i]);
-                            
-                            for (Piece p : blockers) {
-                                if (testMove(p, brdArray[tY][i])) {
-                                    blockable = true;
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                if (tX > kX && kY > tY) {
-                    for (int i = tX - 1; i > kX; i--) {
-                        tY++;
-                        List<Piece> blks = 
-                                blockMoves.get(brdArray[tY][i]);
-                        ConcurrentLinkedDeque<Piece> blockers = 
-                                new ConcurrentLinkedDeque<Piece>();
-                        blockers.addAll(blks);
-                        
-                        if (!blockers.isEmpty()) {
-                            movableSquares.add(brdArray[tY][i]);
-                            
-                            for (Piece p : blockers) {
-                                if (testMove(p, brdArray[tY][i])) {
-                                    blockable = true;
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                if (tX > kX && tY > kY) {
-                    for (int i = tX - 1; i > kX; i--) {
-                        tY--;
-                        List<Piece> blks = 
-                                blockMoves.get(brdArray[tY][i]);
-                        ConcurrentLinkedDeque<Piece> blockers = 
-                                new ConcurrentLinkedDeque<Piece>();
-                        blockers.addAll(blks);
-                        
-                        if (!blockers.isEmpty()) {
-                            movableSquares.add(brdArray[tY][i]);
-                            
-                            for (Piece p : blockers) {
-                                if (testMove(p, brdArray[tY][i])) {
-                                    blockable = true;
-                                }
+            if (Math.abs(kingSquare.getXNum()-threatSquare.getXNum())==Math.abs(kingSquare.getYNum()-threatSquare.getYNum())) {
+                int kX = kingSquare.getXNum();
+                int kY = kingSquare.getYNum();
+                int tX = threatSquare.getXNum();
+                int tY = threatSquare.getYNum();
+                int a = -1;
+                int b = -1;
+                if (kX>tX) a = 1;
+                if (kY>tY) b = 1;
+                for (int i = tX+1; i < kX; i++){
+                    int tXTemp= tX-a;
+                    int tYTemp = tY-b;
+                    List<Piece> blks =
+                            blockPieces.get(boardArray[tYTemp][tXTemp]);
+                    ConcurrentLinkedDeque<Piece> blockers =
+                            new ConcurrentLinkedDeque<Piece>();
+                    blockers.addAll(blks);
+
+                    if (!blockers.isEmpty()) {
+                        movableSquares.add(boardArray[tYTemp][tXTemp]);
+
+                        for (Piece p : blockers) {
+                            if (testMove(p, boardArray[tYTemp][tXTemp])) {
+                                blockable = true;
                             }
                         }
                     }
