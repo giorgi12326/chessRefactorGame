@@ -160,8 +160,8 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
     @Override
     public void mousePressed(MouseEvent e) {
-        currX = e.getX();
-        currY = e.getY();
+        currX = e.getX()-24;
+        currY = e.getY()-24;
 
         Square sq = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
 

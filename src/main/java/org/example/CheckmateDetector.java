@@ -127,7 +127,9 @@ public class CheckmateDetector {
         if (wMoves.get(sq).isEmpty()) {
             movableSquares.addAll(squares);
             return false;
-        } else return true;
+        } else {
+            return true;
+        }
     }
     
     /**
@@ -262,7 +264,6 @@ public class CheckmateDetector {
                                 blockable = true;
                             }
                         }
-                        
                     }
                 }
             }

@@ -13,8 +13,8 @@ public class Square extends JComponent {
     private Piece occupyingPiece;
     private boolean dispPiece;
     
-    private int xNum;
-    private int yNum;
+    private int xNum;//width
+    private int yNum;//height
     
     public Square(Board b, int c, int xNum, int yNum) {
         
