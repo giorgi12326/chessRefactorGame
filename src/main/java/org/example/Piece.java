@@ -40,7 +40,7 @@ public abstract class Piece {
         
         currentSquare.removePiece();
         this.setPosition(fin);
-        currentSquare.put(this);
+        fin.put(this);//issue
         return true;
     }
     

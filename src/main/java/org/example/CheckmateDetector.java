@@ -85,7 +85,7 @@ public class CheckmateDetector {
             Piece p = wIter.next();
             if (p.getSquare() == null) {
                 wIter.remove();
-
+                System.out.println("deleted");
                 continue;
             }
 
@@ -101,7 +101,8 @@ public class CheckmateDetector {
             Piece p = bIter.next();
             if (!p.getClass().equals(King.class)) {
                 if (p.getSquare() == null) {
-                    bIter.remove();//issue!!!
+                    bIter.remove();
+                    System.out.println("removed?");
                     continue;
                 }
                 List<Square> mvs = p.getLegalMoves(board);
