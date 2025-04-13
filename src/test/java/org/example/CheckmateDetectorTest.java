@@ -67,27 +67,22 @@ class CheckmateDetectorTest {
         assertTrue(checkmateDetector.testMove(blackKing,board.getSquareArray()[2][2]));
         assertTrue(checkmateDetector.testMove(blackKing,board.getSquareArray()[0][2]));
 
-//        queen.move(board.getSquareArray()[6][3]);
-//        System.out.println(board);
-//        assertFalse(checkmateDetector.testMove(blackKing,board.getSquareArray()[0][3]));
-
         Queen p = new Queen(1, board.getSquareArray()[7][3], RESOURCES_WQUEEN_PNG);
         board.getSquareArray()[7][3].put(p);
-        board.Wpieces.add(p);
+        checkmateDetector.wPieces.add(p);
         blackKing.move(board.getSquareArray()[0][2]);
         checkmateDetector.update();
-
-        System.out.println(board);
         assertFalse(checkmateDetector.testMove(blackKing,board.getSquareArray()[0][3]));
     }
     @Test
     public void canEvade(){
         blackKing.move(board.getSquareArray()[0][2]);
-//        whiteKing.move(board.getSquareArray()[0][4]);
-//        assertFalse(checkmateDetector.canEvade(checkmateDetector.wMoves,blackKing));
+        whiteKing.move(board.getSquareArray()[0][4]);
+        System.out.println(board);
+        assertFalse(checkmateDetector.canEvade(checkmateDetector.wMoves,blackKing));
         Queen p = new Queen(1, board.getSquareArray()[7][3], RESOURCES_WQUEEN_PNG);
         board.getSquareArray()[7][3].put(p);
-        board.Wpieces.add(p);
+        checkmateDetector.wPieces.add(p);
         checkmateDetector.update();
         assertFalse(checkmateDetector.canEvade(checkmateDetector.wMoves,blackKing));
 

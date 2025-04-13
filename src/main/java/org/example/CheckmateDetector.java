@@ -12,8 +12,8 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class CheckmateDetector {
     private final Board board;
-    private final LinkedList<Piece> wPieces;
-    private final LinkedList<Piece> bPieces;
+     final LinkedList<Piece> wPieces;
+     final LinkedList<Piece> bPieces;
     private final LinkedList<Square> movableSquares;
     private final LinkedList<Square> squares;
     private final King bk;
@@ -83,7 +83,6 @@ public class CheckmateDetector {
         while (wIter.hasNext()) {
             Piece p = wIter.next();
 
-            if (!p.getClass().equals(King.class)) {
                 if (p.getSquare() == null) {
                     wIter.remove();
                     continue;
@@ -95,7 +94,6 @@ public class CheckmateDetector {
                     List<Piece> pieces = wMoves.get(iter.next());
                     pieces.add(p);
                 }
-            }
         }
         
         while (bIter.hasNext()) {
