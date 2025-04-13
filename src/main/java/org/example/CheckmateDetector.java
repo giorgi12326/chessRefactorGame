@@ -68,7 +68,8 @@ public class CheckmateDetector {
         // Iterators through pieces
         Iterator<Piece> wIter = wPieces.iterator();
         Iterator<Piece> bIter = bPieces.iterator();
-        
+        System.out.println(wPieces.size());
+
         // empty moves and movable squares at each update
         for (List<Piece> pieces : wMoves.values()) {
             pieces.removeAll(pieces);
@@ -84,6 +85,7 @@ public class CheckmateDetector {
             Piece p = wIter.next();
             if (p.getSquare() == null) {
                 wIter.remove();
+
                 continue;
             }
 
@@ -99,7 +101,7 @@ public class CheckmateDetector {
             Piece p = bIter.next();
             if (!p.getClass().equals(King.class)) {
                 if (p.getSquare() == null) {
-                    wIter.remove();
+                    bIter.remove();//issue!!!
                     continue;
                 }
                 List<Square> mvs = p.getLegalMoves(board);

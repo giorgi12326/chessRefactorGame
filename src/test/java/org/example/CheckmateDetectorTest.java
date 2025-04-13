@@ -73,6 +73,9 @@ class CheckmateDetectorTest {
         blackKing.move(board.getSquareArray()[0][2]);
         checkmateDetector.update();
         assertFalse(checkmateDetector.testMove(blackKing,board.getSquareArray()[0][3]));
+        checkmateDetector.testMove(p,board.getSquareArray()[6][3]);
+        checkmateDetector.testMove(blackKing,board.getSquareArray()[0][4]);
+        assertFalse(checkmateDetector.blackInCheck());
     }
     @Test
     public void canEvade(){

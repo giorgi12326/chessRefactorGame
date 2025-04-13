@@ -205,31 +205,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
             List<Square> legalMoves = currPiece.getLegalMoves(this);
 //            List<Square> movable = cmd.getAllowableSquares(whiteTurn);
-//
-//            int[][] wAttacks = new int[8][8];
-//            for(Square square: cmd.wMoves.keySet()){
-//                if(!cmd.wMoves.get(square).isEmpty()){
-//                    if(square.getYNum() == 6 && square.getXNum() == 3)
-//                        System.out.println(cmd.wMoves.get(square));
-//                    wAttacks[square.getYNum()][square.getXNum()] = 1;
-//                }
-//            }
-//            int[][] bAttacks = new int[8][8];
-//            for(Square square: cmd.bMoves.keySet()){
-//                if(!cmd.bMoves.get(square).isEmpty()) {
-//                    bAttacks[square.getYNum()][square.getXNum()] = 1;
-//                }
-//            }
-//            for (int i = 0; i < 8; i++) {
-//                for (int j = 0; j < 8; j++) {
-//                    System.out.print(wAttacks[i][j]);
-//                }
-//                System.out.print("     ");
-//                for (int j = 0; j < 8; j++) {
-//                    System.out.print(bAttacks[i][j]);
-//                }
-//                System.out.println();
-//            }
+
 
             if (legalMoves.contains(sq)
 //                    && movable.contains(sq)
@@ -238,13 +214,13 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                 currPiece.move(sq);
                 cmd.update();
 
-                if (cmd.blackCheckMated()) {
+                if (whiteTurn && cmd.blackCheckMated()) {
                     currPiece = null;
                     repaint();
                     this.removeMouseListener(this);
                     this.removeMouseMotionListener(this);
                     gameWindow.checkmateOccurred(0);
-                } else if (cmd.whiteCheckMated()) {
+                } else if (!whiteTurn && cmd.whiteCheckMated()) {
                     currPiece = null;
                     repaint();
                     this.removeMouseListener(this);
@@ -261,9 +237,38 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                 currPiece = null;
             }
         }
+        drawAttackSpots();
+
 
 
         repaint();
+    }
+
+    private void drawAttackSpots() {
+        int[][] wAttacks = new int[8][8];
+        for(Square square: cmd.wMoves.keySet()){
+            if(!cmd.wMoves.get(square).isEmpty()){
+                if(square.getYNum() == 6 && square.getXNum() == 3)
+                    System.out.println(cmd.wMoves.get(square));
+                wAttacks[square.getYNum()][square.getXNum()] = 1;
+            }
+        }
+        int[][] bAttacks = new int[8][8];
+        for(Square square: cmd.bMoves.keySet()){
+            if(!cmd.bMoves.get(square).isEmpty()) {
+                bAttacks[square.getYNum()][square.getXNum()] = 1;
+            }
+        }
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                System.out.print(wAttacks[i][j]);
+            }
+            System.out.print("     ");
+            for (int j = 0; j < 8; j++) {
+                System.out.print(bAttacks[i][j]);
+            }
+            System.out.println();
+        }
     }
 
     @Override
