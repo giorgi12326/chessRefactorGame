@@ -69,7 +69,18 @@ public class Square extends JComponent {
         if (k.getColor() == 1) b.Wpieces.remove(k);
         this.occupyingPiece = p;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Square{" +
+                ", color=" + color +
+                ", occupyingPiece=" + occupyingPiece +
+                ", dispPiece=" + dispPiece +
+                ", xNum=" + xNum +
+                ", yNum=" + yNum +
+                '}';
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         

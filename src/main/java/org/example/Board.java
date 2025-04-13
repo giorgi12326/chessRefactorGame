@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	private static final String RESOURCES_BKNIGHT_PNG = "/bknight.png";
 	private static final String RESOURCES_WROOK_PNG = "/wrook.png";
 	private static final String RESOURCES_BROOK_PNG = "/brook.png";
-	private static final String RESOURCES_WKING_PNG = "/wking.png";
+	 static final String RESOURCES_WKING_PNG = "/wking.png";
 	 static final String RESOURCES_BKING_PNG = "/bking.png";
 	private static final String RESOURCES_BQUEEN_PNG = "/bqueen.png";
 	 static final String RESOURCES_WQUEEN_PNG = "/wqueen.png";
@@ -44,7 +45,24 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     private int currY;
     
     private CheckmateDetector cmd;
-    
+
+    @Override
+    public String toString() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if(board[i][j].getOccupyingPiece() instanceof King)
+                    System.out.print( "K ");
+                if(board[i][j].getOccupyingPiece() instanceof Queen)
+                    System.out.print( "Q ");
+                if(board[i][j].getOccupyingPiece() ==null)
+                    System.out.print("0 ");
+            }
+            System.out.println();
+        }
+        return "Board{" +
+                '}';
+    }
+
     public Board(GameWindow gameWindow) {
         this.gameWindow = gameWindow;
         board = new Square[8][8];
@@ -187,6 +205,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
             List<Square> legalMoves = currPiece.getLegalMoves(this);
             List<Square> movable = cmd.getAllowableSquares(whiteTurn);
+
             if (legalMoves.contains(sq) && movable.contains(sq)
                     && cmd.testMove(currPiece, sq)) {
                 sq.setDisplay(true);
@@ -216,6 +235,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                 currPiece = null;
             }
         }
+
 
         repaint();
     }

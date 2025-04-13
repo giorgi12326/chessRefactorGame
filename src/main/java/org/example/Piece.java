@@ -21,11 +21,13 @@ public abstract class Piece {
         
         try {
             if (this.img == null) {
+
               this.img = ImageIO.read(getClass().getResource(img_file));
+
             }
-          } catch (IOException e) {
-            System.out.println("File not found: " + e.getMessage());
-          }
+        } catch (IOException e) {
+        System.out.println("File not found: " + e.getMessage());
+        }
     }
     
     public boolean move(Square fin) {

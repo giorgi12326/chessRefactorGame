@@ -18,8 +18,8 @@ public class CheckmateDetector {
     private final LinkedList<Square> squares;
     private final King bk;
     private final King wk;
-    private final HashMap<Square,List<Piece>> wMoves;// list of pieces that can move to Square
-    private final HashMap<Square,List<Piece>> bMoves;
+     final HashMap<Square,List<Piece>> wMoves;// list of pieces that can move to Square
+     final HashMap<Square,List<Piece>> bMoves;
     
     /**
      * Constructs a new instance of CheckmateDetector on a given board. By
@@ -100,13 +100,11 @@ public class CheckmateDetector {
         
         while (bIter.hasNext()) {
             Piece p = bIter.next();
-            
             if (!p.getClass().equals(King.class)) {
                 if (p.getSquare() == null) {
                     wIter.remove();
                     continue;
                 }
-                
                 List<Square> mvs = p.getLegalMoves(board);
                 Iterator<Square> iter = mvs.iterator();
                 while (iter.hasNext()) {
@@ -195,7 +193,7 @@ public class CheckmateDetector {
      * Helper method to determine if the king can evade the check.
      * Gives a false positive if the king can capture the checking piece.
      */
-    private boolean canEvade(Map<Square,List<Piece>> tMoves, King tKing) {
+    protected boolean canEvade(Map<Square,List<Piece>> tMoves, King tKing) {
         boolean evade = false;
         List<Square> kingsMoves = tKing.getLegalMoves(board);
         Iterator<Square> iterator = kingsMoves.iterator();
@@ -206,10 +204,10 @@ public class CheckmateDetector {
             if (!testMove(tKing, sq)) continue;
             if (tMoves.get(sq).isEmpty()) {
                 movableSquares.add(sq);
+                System.out.println(sq);
                 evade = true;
             }
         }
-        
         return evade;
     }
     
@@ -355,10 +353,9 @@ public class CheckmateDetector {
 
         p.move(sq);
         update();
-
         if (p.getColor() == 0 && blackInCheck()) movetest = false;
         else if (p.getColor() == 1 && whiteInCheck()) movetest = false;
-        
+
         p.move(init);
         if (c != null) sq.put(c);
         
