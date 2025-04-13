@@ -23,9 +23,9 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	private static final String RESOURCES_WROOK_PNG = "/wrook.png";
 	private static final String RESOURCES_BROOK_PNG = "/brook.png";
 	private static final String RESOURCES_WKING_PNG = "/wking.png";
-	private static final String RESOURCES_BKING_PNG = "/bking.png";
+	 static final String RESOURCES_BKING_PNG = "/bking.png";
 	private static final String RESOURCES_BQUEEN_PNG = "/bqueen.png";
-	private static final String RESOURCES_WQUEEN_PNG = "/wqueen.png";
+	 static final String RESOURCES_WQUEEN_PNG = "/wqueen.png";
 	private static final String RESOURCES_WPAWN_PNG = "/wpawn.png";
 	private static final String RESOURCES_BPAWN_PNG = "/bpawn.png";
 	

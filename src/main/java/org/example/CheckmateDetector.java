@@ -304,15 +304,11 @@ public class CheckmateDetector {
                 for (int i = tX+1; i < kX; i++){
                     int tXTemp= tX-a;
                     int tYTemp = tY-b;
-                    List<Piece> blks =
-                            blockPieces.get(boardArray[tYTemp][tXTemp]);
-                    ConcurrentLinkedDeque<Piece> blockers =
-                            new ConcurrentLinkedDeque<Piece>();
+                    List<Piece> blks = blockPieces.get(boardArray[tYTemp][tXTemp]);
+                    ConcurrentLinkedDeque<Piece> blockers = new ConcurrentLinkedDeque<Piece>();
                     blockers.addAll(blks);
-
                     if (!blockers.isEmpty()) {
                         movableSquares.add(boardArray[tYTemp][tXTemp]);
-
                         for (Piece p : blockers) {
                             if (testMove(p, boardArray[tYTemp][tXTemp])) {
                                 blockable = true;
