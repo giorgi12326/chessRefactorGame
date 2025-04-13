@@ -78,8 +78,8 @@ class CheckmateDetectorTest {
     public void canEvade(){
         blackKing.move(board.getSquareArray()[0][2]);
         whiteKing.move(board.getSquareArray()[0][4]);
-        System.out.println(board);
         assertFalse(checkmateDetector.canEvade(checkmateDetector.wMoves,blackKing));
+
         Queen p = new Queen(1, board.getSquareArray()[7][3], RESOURCES_WQUEEN_PNG);
         board.getSquareArray()[7][3].put(p);
         checkmateDetector.wPieces.add(p);

@@ -50,9 +50,9 @@ public class CheckmateDetector {
         // add all squares to squares list and as hashmap keys
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                squares.add(brd[y][x]);
-                wMoves.put(brd[y][x], new LinkedList<Piece>());
-                bMoves.put(brd[y][x], new LinkedList<Piece>());
+                squares.add(brd[x][y]);
+                wMoves.put(brd[x][y], new LinkedList<Piece>());//switched
+                bMoves.put(brd[x][y], new LinkedList<Piece>());
             }
         }
         
@@ -82,18 +82,17 @@ public class CheckmateDetector {
         // Add each move white and black can make to map
         while (wIter.hasNext()) {
             Piece p = wIter.next();
+            if (p.getSquare() == null) {
+                wIter.remove();
+                continue;
+            }
 
-                if (p.getSquare() == null) {
-                    wIter.remove();
-                    continue;
-                }
-
-                List<Square> mvs = p.getLegalMoves(board);
-                Iterator<Square> iter = mvs.iterator();
-                while (iter.hasNext()) {
-                    List<Piece> pieces = wMoves.get(iter.next());
-                    pieces.add(p);
-                }
+            List<Square> mvs = p.getLegalMoves(board);
+            Iterator<Square> iter = mvs.iterator();
+            while (iter.hasNext()) {
+                List<Piece> pieces = wMoves.get(iter.next());
+                pieces.add(p);
+            }
         }
         
         while (bIter.hasNext()) {

@@ -79,7 +79,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                 int yMod = y % 2;
 
                 if ((xMod == 0 && yMod == 0) || (xMod == 1 && yMod == 1)) {
-                    board[x][y] = new Square(this, 1, y, x);
+                    board[x][y] = new Square(this, 1, y, x);//TODO
                     this.add(board[x][y]);
                 } else {
                     board[x][y] = new Square(this, 0, y, x);
@@ -204,9 +204,35 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                 return;
 
             List<Square> legalMoves = currPiece.getLegalMoves(this);
-            List<Square> movable = cmd.getAllowableSquares(whiteTurn);
+//            List<Square> movable = cmd.getAllowableSquares(whiteTurn);
+//
+//            int[][] wAttacks = new int[8][8];
+//            for(Square square: cmd.wMoves.keySet()){
+//                if(!cmd.wMoves.get(square).isEmpty()){
+//                    if(square.getYNum() == 6 && square.getXNum() == 3)
+//                        System.out.println(cmd.wMoves.get(square));
+//                    wAttacks[square.getYNum()][square.getXNum()] = 1;
+//                }
+//            }
+//            int[][] bAttacks = new int[8][8];
+//            for(Square square: cmd.bMoves.keySet()){
+//                if(!cmd.bMoves.get(square).isEmpty()) {
+//                    bAttacks[square.getYNum()][square.getXNum()] = 1;
+//                }
+//            }
+//            for (int i = 0; i < 8; i++) {
+//                for (int j = 0; j < 8; j++) {
+//                    System.out.print(wAttacks[i][j]);
+//                }
+//                System.out.print("     ");
+//                for (int j = 0; j < 8; j++) {
+//                    System.out.print(bAttacks[i][j]);
+//                }
+//                System.out.println();
+//            }
 
-            if (legalMoves.contains(sq) && movable.contains(sq)
+            if (legalMoves.contains(sq)
+//                    && movable.contains(sq)
                     && cmd.testMove(currPiece, sq)) {
                 sq.setDisplay(true);
                 currPiece.move(sq);
@@ -227,7 +253,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                 } else {
                     currPiece = null;
                     whiteTurn = !whiteTurn;
-                    movable = cmd.getAllowableSquares(whiteTurn);
+//                    movable = cmd.getAllowableSquares(whiteTurn);
                 }
 
             } else {
