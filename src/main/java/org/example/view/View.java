@@ -1,6 +1,7 @@
 package org.example.view;
 
 import org.example.Board;
+import org.example.Piece;
 import org.example.Square;
 
 import javax.swing.*;
@@ -36,26 +37,42 @@ public class View extends JPanel {
         }
 
     }
-
     @Override
     public void paintComponent(Graphics g) {
-        // super.paintComponent(g);
+        super.paintComponent(g);
 
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
+        int tileSize = 50;
+
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
                 Square sq = board.getSquareArray()[y][x];
-                sq.paintComponent(g);
+
+                if (sq.getColor() == 1) {
+                    g.setColor(new Color(221,192,127));
+                } else {
+                    g.setColor(new Color(101,67,33));
+                }
+
+                int px = x * tileSize;
+                int py = y * tileSize;
+
+                g.fillRect(px, py, tileSize, tileSize);
+
+                Piece piece = sq.getOccupyingPiece();
+                if (piece != null && sq.dispPiece) {
+                    Image img = piece.getImage();
+                    g.drawImage(img, px, py, tileSize, tileSize, null);
+                }
             }
         }
 
         if (board.getCurrPiece() != null) {
-            if ((board.getCurrPiece().getColor() == 1 && board.getTurn())
-                    || (board.getCurrPiece().getColor() == 0 && !board.getTurn())) {
-                final Image i = board.getCurrPiece().getImage();
-                g.drawImage(i, board.currX, board.currY, null);
+            Piece curr = board.getCurrPiece();
+            if ((curr.getColor() == 1 && board.getTurn()) ||
+                    (curr.getColor() == 0 && !board.getTurn())) {
+                Image img = curr.getImage();
+                g.drawImage(img, board.currX, board.currY, tileSize, tileSize, null);
             }
         }
     }
-
-
 }
