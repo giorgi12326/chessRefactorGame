@@ -39,7 +39,7 @@ public abstract class Piece {
         }
         
         currentSquare.liftUpThePiece();
-        this.setPosition(fin);
+        setPosition(fin);
         fin.put(this);
         return true;
     }

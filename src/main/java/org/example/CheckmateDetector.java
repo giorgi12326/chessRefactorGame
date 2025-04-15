@@ -68,7 +68,6 @@ public class CheckmateDetector {
         // Iterators through pieces
         Iterator<Piece> wIter = wPieces.iterator();
         Iterator<Piece> bIter = bPieces.iterator();
-        System.out.println(wPieces.size());
 
         // empty moves and movable squares at each update
         for (List<Piece> pieces : wMoves.values()) {
@@ -85,7 +84,6 @@ public class CheckmateDetector {
             Piece p = wIter.next();
             if (p.getSquare() == null) {
                 wIter.remove();
-                System.out.println("deleted");
                 continue;
             }
 
@@ -102,7 +100,6 @@ public class CheckmateDetector {
             if (!p.getClass().equals(King.class)) {
                 if (p.getSquare() == null) {
                     bIter.remove();
-                    System.out.println("removed?");
                     continue;
                 }
                 List<Square> mvs = p.getLegalMoves(board);
@@ -152,10 +149,10 @@ public class CheckmateDetector {
         // Check if black is in check
         if (!this.blackInCheck()) return false;
         
-        // If yes, check if king can evade
+        // If yes, check if king can evade even with capture
         if (canEvade(wMoves, bk)) checkmate = false;
         
-        // If no, check if threat can be captured
+        // If no, check if threat itself can be captured
         List<Piece> threats = wMoves.get(bk.getSquare());
         if (canCapture(bMoves, threats, bk)) checkmate = false;
         
@@ -196,15 +193,13 @@ public class CheckmateDetector {
     protected boolean canEvade(Map<Square,List<Piece>> tMoves, King tKing) {
         boolean evade = false;
         List<Square> kingsMoves = tKing.getLegalMoves(board);
-        Iterator<Square> iterator = kingsMoves.iterator();
-        
+
         // If king is not threatened at some square, it can evade
-        while (iterator.hasNext()) {
-            Square sq = iterator.next();
-            if (!testMove(tKing, sq)) continue;
+        for (Square sq : kingsMoves) {
+            if (!testMove(tKing, sq))
+                continue;
             if (tMoves.get(sq).isEmpty()) {
                 movableSquares.add(sq);
-                System.out.println(sq);
                 evade = true;
             }
         }
@@ -217,13 +212,12 @@ public class CheckmateDetector {
      * movableSquares added for each of the piece that can save from check with capture
      * but old code added only up to 2/TODO
      */
-    private boolean canCapture(Map<Square,List<Piece>> poss,
+    public boolean canCapture(Map<Square,List<Piece>> poss,
                                List<Piece> threats, King k) {
         boolean capture = false;
         for (Piece threat:threats) {
             for (Piece defendingPiece:poss.get(threat.getSquare())) {
-                List<Square> legalMoves = defendingPiece.getLegalMoves(board);
-                if(legalMoves.contains(threat.getSquare()) && testMove(defendingPiece,threat.getSquare())) {
+                if(testMove(defendingPiece,threat.getSquare())) {
                     movableSquares.add(threat.getSquare());
                     capture = true;
                 }
@@ -236,7 +230,7 @@ public class CheckmateDetector {
     /*
      * Helper method to determine if check can be blocked by a piece.
      */
-    private boolean canBlock(List<Piece> threats,
+    protected boolean canBlock(List<Piece> threats,
                              Map <Square,List<Piece>> blockPieces, King k) {
         boolean blockable = false;
         
@@ -361,7 +355,6 @@ public class CheckmateDetector {
         if (destinationPiece != null) {
             putPieceOnBoardAndAddToList(destinationPiece,destinationSquare);
         }
-        
         update();
         
         movableSquares.addAll(squares);
