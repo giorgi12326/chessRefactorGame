@@ -52,6 +52,8 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
             for (int j = 0; j < 8; j++) {
                 if(board[i][j].getOccupyingPiece() instanceof King)
                     System.out.print( "K ");
+                if(board[i][j].getOccupyingPiece() instanceof Knight)
+                    System.out.print( "Z ");
                 if(board[i][j].getOccupyingPiece() instanceof Queen)
                     System.out.print( "Q ");
                 if(board[i][j].getOccupyingPiece() ==null)

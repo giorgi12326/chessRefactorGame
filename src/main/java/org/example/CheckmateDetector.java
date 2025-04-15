@@ -341,28 +341,40 @@ public class CheckmateDetector {
     /**
      * Tests a move a player is about to make to prevent making an illegal move
      * that puts the player in check.
-     * @param p Piece moved
-     * @param sq Square to which p is about to move
+     * @param movingPiece Piece moved
+     * @param destinationSquare Square to which movingPiece is about to move
      * @return false if move would cause a check
      */
-    public boolean testMove(Piece p, Square sq) {
-        Piece c = sq.getOccupyingPiece();
-        
+    public boolean testMove(Piece movingPiece, Square destinationSquare) {
         boolean movetest = true;
-        Square init = p.getSquare();
 
-        p.move(sq);
+        Piece destinationPiece = destinationSquare.getOccupyingPiece();
+        Square initSquare = movingPiece.getSquare();
+
+        movingPiece.move(destinationSquare);
         update();
-        if (p.getColor() == 0 && blackInCheck()) movetest = false;
-        else if (p.getColor() == 1 && whiteInCheck()) movetest = false;
 
-        p.move(init);
-        if (c != null) sq.put(c);
+        if (movingPiece.getColor() == 0 && blackInCheck()) movetest = false;
+        else if (movingPiece.getColor() == 1 && whiteInCheck()) movetest = false;
+
+        movingPiece.move(initSquare);
+        if (destinationPiece != null) {
+            putPieceOnBoardAndAddToList(destinationPiece,destinationSquare);
+        }
         
         update();
         
         movableSquares.addAll(squares);
         return movetest;
+    }
+
+    private void putPieceOnBoardAndAddToList(Piece destinationPiece, Square destinationSquare) {
+        destinationSquare.put(destinationPiece);
+        destinationPiece.move(destinationSquare);
+        if(destinationPiece.getColor() == 1)
+            wPieces.add(destinationPiece);
+        else
+            bPieces.add(destinationPiece);
     }
 
 }

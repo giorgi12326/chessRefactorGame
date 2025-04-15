@@ -35,12 +35,12 @@ public abstract class Piece {
         
         if (occup != null) {
             if (occup.getColor() == this.color) return false;
-            else fin.capture(this);
+            else fin.removePieceOnThis();
         }
         
-        currentSquare.removePiece();
+        currentSquare.liftUpThePiece();
         this.setPosition(fin);
-        fin.put(this);//issue
+        fin.put(this);
         return true;
     }
     

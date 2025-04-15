@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 import static org.example.Board.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +21,7 @@ class CheckmateDetectorTest {
         board = new Board(null);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                board.getSquareArray()[i][j].removePiece();
+                board.getSquareArray()[i][j].liftUpThePiece();
             }
 
         }
@@ -60,12 +59,13 @@ class CheckmateDetectorTest {
     }
 
     @Test
-    void testMove() {
+    void testMoveWithoutCapture() {
         assertFalse(checkmateDetector.testMove(blackKing,board.getSquareArray()[1][3]));
         assertFalse(checkmateDetector.testMove(blackKing,board.getSquareArray()[1][1]));
         assertFalse(checkmateDetector.testMove(blackKing,board.getSquareArray()[1][7]));
         assertTrue(checkmateDetector.testMove(blackKing,board.getSquareArray()[2][2]));
         assertTrue(checkmateDetector.testMove(blackKing,board.getSquareArray()[0][2]));
+        System.out.println(board);
 
         Queen p = new Queen(1, board.getSquareArray()[7][3], RESOURCES_WQUEEN_PNG);
         board.getSquareArray()[7][3].put(p);
@@ -76,6 +76,21 @@ class CheckmateDetectorTest {
         checkmateDetector.testMove(p,board.getSquareArray()[6][3]);
         checkmateDetector.testMove(blackKing,board.getSquareArray()[0][4]);
         assertFalse(checkmateDetector.blackInCheck());
+    }
+    @Test
+    public void testMoveWithCapture(){
+        Knight knight = new Knight(0, board.getSquareArray()[3][0], RESOURCES_BKING_PNG);
+        board.getSquareArray()[3][0].put(knight);
+        checkmateDetector.bPieces.add(knight);
+        checkmateDetector.testMove(queen,knight.getSquare());
+
+        assertEquals(2,checkmateDetector.wPieces.size());
+        assertEquals(queen,board.getSquareArray()[1][0].getOccupyingPiece());
+        assertEquals(board.getSquareArray()[1][0],queen.getSquare());
+
+        assertEquals(2,checkmateDetector.bPieces.size());
+        assertEquals(knight,board.getSquareArray()[3][0].getOccupyingPiece());
+        assertEquals(board.getSquareArray()[3][0],knight.getSquare());
     }
     @Test
     public void canEvade(){

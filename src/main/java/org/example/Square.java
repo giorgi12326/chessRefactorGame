@@ -57,17 +57,18 @@ public class Square extends JComponent {
         p.setPosition(this);
     }
     
-    public Piece removePiece() {
+    public Piece liftUpThePiece() {
         Piece p = this.occupyingPiece;
         this.occupyingPiece = null;
         return p;
     }
     
-    public void capture(Piece p) {
+    public void removePieceOnThis() {
         Piece k = getOccupyingPiece();
+        k.setPosition(null);
+        occupyingPiece = null;
         if (k.getColor() == 0) b.Bpieces.remove(k);
         if (k.getColor() == 1) b.Wpieces.remove(k);
-        this.occupyingPiece = p;
     }
 
     @Override
