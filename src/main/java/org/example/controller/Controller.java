@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import org.example.Board;
+import org.example.model.Board;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -15,6 +15,7 @@ public class Controller implements MouseListener, MouseMotionListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+
         board.reactToMousePress(e);
     }
 

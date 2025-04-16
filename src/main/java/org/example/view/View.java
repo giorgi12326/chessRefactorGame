@@ -1,8 +1,8 @@
 package org.example.view;
 
-import org.example.Board;
-import org.example.Piece;
-import org.example.Square;
+import org.example.model.Board;
+import org.example.model.Piece;
+import org.example.model.Square;
 
 import javax.swing.*;
 import java.awt.*;

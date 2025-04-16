@@ -1,6 +1,5 @@
-package org.example;
+package org.example.model;
 
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -32,7 +31,9 @@ public abstract class Piece {
     
     public boolean move(Square fin) {
         Piece occup = fin.getOccupyingPiece();
-        
+        if(this instanceof Pawn && !fin.isOccupied())
+            ((Pawn) this).enPassant = fin.getXNum() - getSquare().getXNum();
+
         if (occup != null) {
             if (occup.getColor() == this.color) return false;
             else fin.removePieceOnThis();

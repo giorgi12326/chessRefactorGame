@@ -1,21 +1,13 @@
-package org.example;
+package org.example.model;
 
 import org.example.controller.Controller;
+import org.example.view.GameWindow;
 import org.example.view.View;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class Board  {
@@ -58,6 +50,8 @@ public class Board  {
             for (int j = 0; j < 8; j++) {
                 if(board[i][j].getOccupyingPiece() instanceof King)
                     System.out.print( "K ");
+                if(board[i][j].getOccupyingPiece() instanceof Pawn)
+                    System.out.print( "P ");
                 if(board[i][j].getOccupyingPiece() instanceof Knight)
                     System.out.print( "Z ");
                 if(board[i][j].getOccupyingPiece() instanceof Queen)
@@ -99,8 +93,8 @@ public class Board  {
             }
         }
         for (int x = 0; x < 8; x++) {
-            board[1][x].put(new Pawn(0, board[1][x], RESOURCES_BPAWN_PNG));
-            board[6][x].put(new Pawn(1, board[6][x], RESOURCES_WPAWN_PNG));
+            board[1][x].put(new Pawn(0, board[1][x], RESOURCES_BPAWN_PNG,this));
+            board[6][x].put(new Pawn(1, board[6][x], RESOURCES_WPAWN_PNG,this));
         }
         
         board[7][3].put(new Queen(1, board[7][3], RESOURCES_WQUEEN_PNG));
@@ -182,6 +176,7 @@ public class Board  {
                 return;
 
             List<Square> legalMoves = currPiece.getLegalMoves(this);
+
 //            List<Square> movable = cmd.getAllowableSquares(whiteTurn);
 
 
@@ -190,6 +185,7 @@ public class Board  {
                     && cmd.testMove(currPiece, sq)) {
                 sq.setDisplay(true);
                 currPiece.move(sq);
+
                 cmd.update();
 
                 if (whiteTurn && cmd.blackCheckMated()) {
@@ -215,7 +211,7 @@ public class Board  {
                 currPiece = null;
             }
         }
-        drawAttackSpots();
+//        drawAttackSpots();
 
 
 

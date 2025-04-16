@@ -1,4 +1,6 @@
-package org.example;
+package org.example.model;
+
+import org.example.view.StartMenu;
 
 import javax.swing.*;
 

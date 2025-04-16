@@ -1,4 +1,4 @@
-package org.example;
+package org.example.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import java.util.List;
-import static org.example.Board.*;
+import static org.example.model.Board.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CheckmateDetectorTest {

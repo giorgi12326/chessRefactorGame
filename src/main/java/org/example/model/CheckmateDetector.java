@@ -1,4 +1,4 @@
-package org.example;
+package org.example.model;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -94,7 +94,7 @@ public class CheckmateDetector {
                 pieces.add(p);
             }
         }
-        
+
         while (bIter.hasNext()) {
             Piece p = bIter.next();
             if (!p.getClass().equals(King.class)) {
@@ -193,6 +193,7 @@ public class CheckmateDetector {
     protected boolean canEvade(Map<Square,List<Piece>> tMoves, King tKing) {
         boolean evade = false;
         List<Square> kingsMoves = tKing.getLegalMoves(board);
+        System.out.println("call1");
 
         // If king is not threatened at some square, it can evade
         for (Square sq : kingsMoves) {
@@ -341,6 +342,10 @@ public class CheckmateDetector {
      */
     public boolean testMove(Piece movingPiece, Square destinationSquare) {
         boolean movetest = true;
+        if(movingPiece instanceof Pawn) {
+            ((Pawn) movingPiece).enPassant = 0;
+            ((Pawn) movingPiece).idempotency = false;
+        }
 
         Piece destinationPiece = destinationSquare.getOccupyingPiece();
         Square initSquare = movingPiece.getSquare();
@@ -352,11 +357,17 @@ public class CheckmateDetector {
         else if (movingPiece.getColor() == 1 && whiteInCheck()) movetest = false;
 
         movingPiece.move(initSquare);
+
         if (destinationPiece != null) {
             putPieceOnBoardAndAddToList(destinationPiece,destinationSquare);
         }
         update();
-        
+
+        if(movingPiece instanceof Pawn){
+            ((Pawn) movingPiece).wasMovedLastTurn+=2;
+            ((Pawn) movingPiece).idempotency = true;
+            }
+
         movableSquares.addAll(squares);
         return movetest;
     }
@@ -364,6 +375,7 @@ public class CheckmateDetector {
     private void putPieceOnBoardAndAddToList(Piece destinationPiece, Square destinationSquare) {
         destinationSquare.put(destinationPiece);
         destinationPiece.move(destinationSquare);
+
         if(destinationPiece.getColor() == 1)
             wPieces.add(destinationPiece);
         else

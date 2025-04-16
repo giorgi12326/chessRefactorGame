@@ -1,7 +1,4 @@
-package org.example;
-
-import java.awt.Color;
-import java.awt.Graphics;
+package org.example.model;
 
 import javax.swing.*;
 
