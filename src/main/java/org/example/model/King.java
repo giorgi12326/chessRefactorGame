@@ -14,10 +14,13 @@ public class King extends Piece {
 
     @Override
     public boolean move(Square fin) {
-        if(fin == board.getSquareArray()[7][6] && idempotency) {
-            board.getSquareArray()[7][7].getOccupyingPiece().move(board.getSquareArray()[7][5]);
-            board.getSquareArray()[7][5].setDisplay(true);
-
+        if(fin == board.getSquareArray()[getColor()*7][6] && idempotency) {
+            board.getSquareArray()[getColor()*7][7].getOccupyingPiece().move(board.getSquareArray()[getColor()*7][5]);
+            board.getSquareArray()[getColor()*7][5].setDisplay(true);
+        }
+        if(fin == board.getSquareArray()[getColor()*7][2] && idempotency) {
+            board.getSquareArray()[getColor()*7][0].getOccupyingPiece().move(board.getSquareArray()[getColor()*7][3]);
+            board.getSquareArray()[getColor()*7][3].setDisplay(true);
         }
         wasMoved = true;
         return super.move(fin);
@@ -50,31 +53,43 @@ LinkedList<Square> legalMoves = new LinkedList<Square>();
         if(this.board.cmd != null){
             if(!this.board.getSquareArray()[getColor()*7][5].isOccupied()&&
                     !this.board.getSquareArray()[getColor()*7][6].isOccupied()) {
-                if (getColor() == 0) {
-                    if (board[getColor()*7][7].isOccupied() &&
-                            board[getColor()*7][7].getOccupyingPiece() instanceof Rook &&
-                            !((Rook) board[getColor()*7][7].getOccupyingPiece()).wasMoved &&
-                            !wasMoved &&
-                            x == 4 &&
+                if (board[getColor()*7][7].isOccupied() &&
+                        board[getColor()*7][7].getOccupyingPiece() instanceof Rook &&
+                        !((Rook) board[getColor()*7][7].getOccupyingPiece()).wasMoved &&
+                        !wasMoved &&
+                        x == 4
+                       ) {
+                    if(getColor() == 0 &&
                             this.board.cmd.wMoves.get(board[0][6]).isEmpty() &&
-                            this.board.cmd.wMoves.get(board[0][5]).isEmpty()) {
+                            this.board.cmd.wMoves.get(board[0][5]).isEmpty()){
                         legalMoves.add(board[y][x + 2]);
                     }
-
+                    else if(getColor() == 1 &&
+                            this.board.cmd.bMoves.get(board[7][6]).isEmpty() &&
+                            this.board.cmd.bMoves.get(board[7][5]).isEmpty()){
+                        legalMoves.add(board[y][x + 2]);
+                    }
                 }
             }
             if(!this.board.getSquareArray()[getColor()*7][1].isOccupied()&&
                 !this.board.getSquareArray()[getColor()*7][2].isOccupied()&&
                 !this.board.getSquareArray()[getColor()*7][3].isOccupied()){
-                if(board[0][0].isOccupied() &&
-                        board[0][0].getOccupyingPiece() instanceof Rook &&
-                        !((Rook)board[0][0].getOccupyingPiece()).wasMoved &&
+                if(board[getColor()*7][0].isOccupied() &&
+                        board[getColor()*7][0].getOccupyingPiece() instanceof Rook &&
+                        !((Rook)board[getColor()*7][0].getOccupyingPiece()).wasMoved &&
                         !wasMoved &&
-                        x == 4 &&
-                        this.board.cmd.wMoves.get(board[0][1]).isEmpty() &&
-                        this.board.cmd.wMoves.get(board[0][2]).isEmpty() &&
-                        this.board.cmd.wMoves.get(board[0][3]).isEmpty()){
-                    legalMoves.add(board[y][x-2]);
+                        x == 4){
+                    if(getColor() == 0 &&
+                            this.board.cmd.wMoves.get(board[0][1]).isEmpty() &&
+                            this.board.cmd.wMoves.get(board[0][2]).isEmpty() &&
+                            this.board.cmd.wMoves.get(board[0][3]).isEmpty())
+                        legalMoves.add(board[y][x-2]);
+                    else if(getColor() == 1 &&
+                            this.board.cmd.bMoves.get(board[0][1]).isEmpty() &&
+                            this.board.cmd.bMoves.get(board[0][2]).isEmpty() &&
+                            this.board.cmd.bMoves.get(board[0][3]).isEmpty())
+                        legalMoves.add(board[y][x-2]);
+
                 }
             }
         }
