@@ -28,10 +28,10 @@ class CheckmateDetectorTest {
         queen = new Queen(1, board.getSquareArray()[1][0], RESOURCES_WQUEEN_PNG);
         board.getSquareArray()[1][0].put(queen);
 
-        blackKing = new King(0, board.getSquareArray()[1][2], RESOURCES_BKING_PNG);
+        blackKing = new King(0, board.getSquareArray()[1][2], RESOURCES_BKING_PNG,board);
         board.getSquareArray()[1][2].put(blackKing);
 
-        whiteKing = new King(1, board.getSquareArray()[7][7], RESOURCES_WKING_PNG);
+        whiteKing = new King(1, board.getSquareArray()[7][7], RESOURCES_WKING_PNG,board);
         board.getSquareArray()[7][7].put(whiteKing);
         LinkedList<Piece> wPieces = new LinkedList<>();
         LinkedList<Piece> bPieces = new LinkedList<>();

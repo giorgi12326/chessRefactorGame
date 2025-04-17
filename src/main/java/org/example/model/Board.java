@@ -21,8 +21,8 @@ public class Board  {
 	 static final String RESOURCES_WKING_PNG = "/wking.png";
 	 static final String RESOURCES_BKING_PNG = "/bking.png";
 	private static final String RESOURCES_BQUEEN_PNG = "/bqueen.png";
-	 static final String RESOURCES_WQUEEN_PNG = "/wqueen.png";
-	private static final String RESOURCES_WPAWN_PNG = "/wpawn.png";
+	 public static final String RESOURCES_WQUEEN_PNG = "/wqueen.png";
+	 static final String RESOURCES_WPAWN_PNG = "/wpawn.png";
 	private static final String RESOURCES_BPAWN_PNG = "/bpawn.png";
 	
 	// Logical and graphical representations of board

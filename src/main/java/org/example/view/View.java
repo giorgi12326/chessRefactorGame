@@ -1,11 +1,14 @@
 package org.example.view;
 
 import org.example.model.Board;
+import org.example.model.Pawn;
 import org.example.model.Piece;
 import org.example.model.Square;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static org.example.model.Board.RESOURCES_WQUEEN_PNG;
 
 public class View extends JPanel {
     private final Board board;
@@ -74,5 +77,7 @@ public class View extends JPanel {
                 g.drawImage(img, board.currX, board.currY, tileSize, tileSize, null);
             }
         }
+
+
     }
 }

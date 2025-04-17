@@ -22,6 +22,7 @@ public class Pawn extends Piece {
 
         wasMoved = true;
         wasMovedLastTurn--;
+        System.out.println(idempotency + " " + enPassant);
         if(idempotency && enPassant != 0) {
             board.getSquareArray()[fin.getYNum() + 2*getColor()-1][fin.getXNum()].removePieceOnThis();
         }
@@ -41,7 +42,8 @@ public class Pawn extends Piece {
 
         if (c == 0) {
             if (!wasMoved) {
-                if (!board[y + 2][x].isOccupied()) {
+                if (!board[y + 2][x].isOccupied()&&
+                        !board[y - 1][x].isOccupied()) {
                     legalMoves.add(board[y + 2][x]);
                 }
             }
@@ -53,7 +55,9 @@ public class Pawn extends Piece {
             }
 
             if (x + 1 < 8 && y + 1 < 8) {
-                if (board[y + 1][x + 1].isOccupied()) {
+                if (board[y + 1][x + 1].isOccupied() &&
+                    board[y + 1][x + 1].getOccupyingPiece().getColor() == 1
+                    ) {
                     legalMoves.add(board[y + 1][x + 1]);
                 }
                 if (board[y][x + 1].isOccupied() &&
@@ -66,7 +70,8 @@ public class Pawn extends Piece {
             }
 
             if (x - 1 >= 0 && y + 1 < 8) {
-                if (board[y + 1][x - 1].isOccupied()) {
+                if (board[y + 1][x - 1].isOccupied()&&
+                    board[y + 1][x - 1].getOccupyingPiece().getColor() == 1) {
                     legalMoves.add(board[y + 1][x - 1]);
                 }
                 if (board[y][x - 1].isOccupied() &&
@@ -83,7 +88,8 @@ public class Pawn extends Piece {
 
         if (c == 1) {
             if (!wasMoved) {
-                if (!board[y - 2][x].isOccupied()) {
+                if (!board[y - 2][x].isOccupied() &&
+                        !board[y - 1][x].isOccupied()) {
                     legalMoves.add(board[y - 2][x]);
                 }
             }
@@ -95,7 +101,8 @@ public class Pawn extends Piece {
             }
 
             if (x + 1 < 8 && y - 1 >= 0) {
-                if (board[y - 1][x + 1].isOccupied()) {
+                if (board[y - 1][x + 1].isOccupied()&&
+                        board[y - 1][x + 1].getOccupyingPiece().getColor() == 0) {
                     legalMoves.add(board[y - 1][x + 1]);
                 }
                 if (board[y][x + 1].isOccupied() &&
@@ -108,7 +115,8 @@ public class Pawn extends Piece {
             }
 
             if (x - 1 >= 0 && y - 1 >= 0) {
-                if (board[y - 1][x - 1].isOccupied()) {
+                if (board[y - 1][x - 1].isOccupied()&&
+                    board[y - 1][x - 1].getOccupyingPiece().getColor() == 0) {
                     legalMoves.add(board[y - 1][x - 1]);
                 }
                 if (board[y][x - 1].isOccupied() &&

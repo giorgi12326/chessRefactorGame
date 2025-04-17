@@ -14,7 +14,7 @@ public abstract class Piece {
     private Square currentSquare;
     private BufferedImage img;
 
-    public boolean idempotency;
+    public boolean idempotency = true;
 
     
     public Piece(int color, Square initSq, String img_file) {

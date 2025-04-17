@@ -89,7 +89,6 @@ LinkedList<Square> legalMoves = new LinkedList<Square>();
                             this.board.cmd.bMoves.get(board[0][2]).isEmpty() &&
                             this.board.cmd.bMoves.get(board[0][3]).isEmpty())
                         legalMoves.add(board[y][x-2]);
-
                 }
             }
         }
