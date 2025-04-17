@@ -13,6 +13,9 @@ public abstract class Piece {
     private final int color;
     private Square currentSquare;
     private BufferedImage img;
+
+    public boolean idempotency;
+
     
     public Piece(int color, Square initSq, String img_file) {
         this.color = color;
@@ -20,9 +23,7 @@ public abstract class Piece {
         
         try {
             if (this.img == null) {
-
               this.img = ImageIO.read(getClass().getResource(img_file));
-
             }
         } catch (IOException e) {
         System.out.println("File not found: " + e.getMessage());

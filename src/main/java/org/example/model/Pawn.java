@@ -7,7 +7,6 @@ public class Pawn extends Piece {
     private boolean wasMoved;
     public int wasMovedLastTurn;
     public int enPassant;
-    public boolean idempotency;
     public Board board;
 
 
@@ -74,6 +73,7 @@ public class Pawn extends Piece {
                         board[y][x - 1].getOccupyingPiece() instanceof Pawn &&
                         board[y][x - 1].getOccupyingPiece().getColor() != getColor() &&
                         ((Pawn) board[y][x - 1].getOccupyingPiece()).wasMovedLastTurn == 0 &&
+
                         y == 4) {
                     System.out.println("asdfg");
                     legalMoves.add(board[y + 1][x - 1]);

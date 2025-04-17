@@ -39,7 +39,7 @@ public class Board  {
     public int currX;
     public int currY;
     
-    private CheckmateDetector cmd;
+    public CheckmateDetector cmd;
     public final Controller controller;
     public  final View view;
 
@@ -100,8 +100,8 @@ public class Board  {
         board[7][3].put(new Queen(1, board[7][3], RESOURCES_WQUEEN_PNG));
         board[0][3].put(new Queen(0, board[0][3], RESOURCES_BQUEEN_PNG));
         
-        King bk = new King(0, board[0][4], RESOURCES_BKING_PNG);
-        King wk = new King(1, board[7][4], RESOURCES_WKING_PNG);
+        King bk = new King(0, board[0][4], RESOURCES_BKING_PNG,this);
+        King wk = new King(1, board[7][4], RESOURCES_WKING_PNG,this);
         board[0][4].put(bk);
         board[7][4].put(wk);
 

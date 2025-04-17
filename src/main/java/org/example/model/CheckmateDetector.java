@@ -342,9 +342,10 @@ public class CheckmateDetector {
      */
     public boolean testMove(Piece movingPiece, Square destinationSquare) {
         boolean movetest = true;
+        movingPiece.idempotency = false;
+
         if(movingPiece instanceof Pawn) {
             ((Pawn) movingPiece).enPassant = 0;
-            ((Pawn) movingPiece).idempotency = false;
         }
 
         Piece destinationPiece = destinationSquare.getOccupyingPiece();
@@ -365,8 +366,9 @@ public class CheckmateDetector {
 
         if(movingPiece instanceof Pawn){
             ((Pawn) movingPiece).wasMovedLastTurn+=2;
-            ((Pawn) movingPiece).idempotency = true;
-            }
+        }
+        movingPiece.idempotency = true;
+
 
         movableSquares.addAll(squares);
         return movetest;
