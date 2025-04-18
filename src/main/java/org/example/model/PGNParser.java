@@ -8,6 +8,7 @@ public class PGNParser {
         public String from;
         public int[] to;
         public boolean isWhite;
+        public String disambiguation;
         public Class<?> piece;
         public boolean isCapture = false;
         public boolean isCastleKingSide = false;
@@ -36,10 +37,13 @@ public class PGNParser {
         pgn = pgn.replaceAll("\\s+", " ").trim();
 
         String[] tokens = pgn.split(" ");
-        boolean isWhite = true;
+        boolean isWhite = false;
 
         for (String token : tokens) {
             PGNMove move = new PGNMove();
+            isWhite = !isWhite;
+            move.isWhite = isWhite;
+
 
             if (token.equals("O-O")) {
                 move.isCastleKingSide = true;
@@ -65,15 +69,15 @@ public class PGNParser {
                 move.to = algebraicToCoords(destination);
                 move.isCapture = token.contains("x");
                 move.isPromotion = promotion != null;
+                move.disambiguation = disambiguation;
                 if (move.isPromotion) move.promoteTo = promotion.charAt(0);
 
                 // TODO: Find `from` square based on current board state
                 // For now we set it to null or placeholder:
                 move.from = "?";
-                move.isWhite = isWhite;
-                isWhite = !isWhite;
                 moves.add(move);
             }
+
         }
 
         return moves;
