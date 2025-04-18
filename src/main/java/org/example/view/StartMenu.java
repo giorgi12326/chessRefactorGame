@@ -102,6 +102,7 @@ public class StartMenu implements Runnable {
         
         // Buttons
         Box buttons = Box.createHorizontalBox();
+        Box pgnContainer = Box.createHorizontalBox();
         final JButton quit = new JButton("Quit");
         
         quit.addActionListener(new ActionListener() {
@@ -138,14 +139,30 @@ public class StartMenu implements Runnable {
                 startWindow.dispose();
             }
           });
+        final JButton pgnParser = new JButton("pgnParser");
+        pgnParser.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String bn = blackInput.getText();
+                String wn = whiteInput.getText();
+                int hh = Integer.parseInt((String) hours.getSelectedItem());
+                int mm = Integer.parseInt((String) minutes.getSelectedItem());
+                int ss = Integer.parseInt((String) seconds.getSelectedItem());
+
+                new PgnField().run();
+                startWindow.dispose();
+            }
+        });
+
         
         buttons.add(start);
         buttons.add(Box.createHorizontalStrut(10));
         buttons.add(instr);
         buttons.add(Box.createHorizontalStrut(10));
         buttons.add(quit);
+        pgnContainer.add(pgnParser);
         components.add(buttons);
-        
+        components.add(pgnContainer);
+
         Component space = Box.createGlue();
         components.add(space);
 

@@ -14,11 +14,13 @@ public class King extends Piece {
 
     @Override
     public boolean move(Square fin) {
-        if(fin == board.getSquareArray()[getColor()*7][6] && idempotency) {
+        if(fin == board.getSquareArray()[getColor()*7][6] && idempotency &&
+                board.getSquareArray()[getColor()*7][7].isOccupied()) {
             board.getSquareArray()[getColor()*7][7].getOccupyingPiece().move(board.getSquareArray()[getColor()*7][5]);
             board.getSquareArray()[getColor()*7][5].setDisplay(true);
         }
-        if(fin == board.getSquareArray()[getColor()*7][2] && idempotency) {
+        if(fin == board.getSquareArray()[getColor()*7][2] && idempotency &&
+                board.getSquareArray()[getColor()*7][0].isOccupied()) {
             board.getSquareArray()[getColor()*7][0].getOccupyingPiece().move(board.getSquareArray()[getColor()*7][3]);
             board.getSquareArray()[getColor()*7][3].setDisplay(true);
         }

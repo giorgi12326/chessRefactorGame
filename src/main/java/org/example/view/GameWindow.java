@@ -50,7 +50,7 @@ public class GameWindow {
         JPanel gameData = gameDataPanel(blackName, whiteName, hh, mm, ss);
         gameData.setSize(gameData.getPreferredSize());
         gameWindow.add(gameData, BorderLayout.NORTH);
-        
+
         this.board = new Board(this);
         
         gameWindow.add(board.view, BorderLayout.CENTER);

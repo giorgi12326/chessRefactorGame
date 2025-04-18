@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import static org.example.model.Board.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,9 +74,29 @@ public class PawnTest {
         createPawnOnSquare(1,5,1);
         assertEquals(0,wPawn.getLegalMoves(board).size());
     }
+    @Test
+    public void canPawnBlock(){
+        blackKing.move(board.getSquareArray()[0][0]);
+        Queen queenOnSquare = createQueenOnSquare(1, 6, 6);
+        assertTrue(checkmateDetector.canBlock(List.of(queenOnSquare),checkmateDetector.bMoves,blackKing));
+        createPawnOnSquare(0,1,3);
+        bPawn.move(board.getSquareArray()[3][2]);
+        assertTrue(checkmateDetector.canBlock(List.of(queenOnSquare),checkmateDetector.bMoves,blackKing));
+
+    }
 
     private Pawn createPawnOnSquare(int color,int h, int w){
         Pawn p = new Pawn(color, board.getSquareArray()[h][w], RESOURCES_WPAWN_PNG,board);
+        board.getSquareArray()[h][w].put(p);
+        if(color == 0)
+            checkmateDetector.bPieces.add(p);
+        else
+            checkmateDetector.wPieces.add(p);
+        return p;
+
+    }
+    private Queen createQueenOnSquare(int color,int h, int w){
+        Queen p = new Queen(color, board.getSquareArray()[h][w], RESOURCES_WQUEEN_PNG);
         board.getSquareArray()[h][w].put(p);
         if(color == 0)
             checkmateDetector.bPieces.add(p);
