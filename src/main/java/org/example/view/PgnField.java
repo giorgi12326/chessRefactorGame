@@ -1,11 +1,8 @@
 package org.example.view;
 
-import org.example.model.Board;
+import org.example.model.BoardContext;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class PgnField implements Runnable {
@@ -65,7 +62,7 @@ public class PgnField implements Runnable {
         loadButton1.addActionListener(e -> {
             String pgn = pgnTextArea.getText();
 
-            new Board(null, pgn);
+            new BoardContext(pgn);
 
             startWindow.dispose();
         });

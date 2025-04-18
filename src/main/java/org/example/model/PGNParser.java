@@ -31,8 +31,7 @@ public class PGNParser {
         return new int[]{rank, file};
     }
 
-    public static List<PGNMove> parsePGN(String pgn) {
-        List<PGNMove> moves = new ArrayList<>();
+    public static List<String> parsePGN(String pgn) {
         List<String> games = new ArrayList<>();
         String[] gameArray = pgn.split("(?=\\[Event )");
 
@@ -42,23 +41,29 @@ public class PGNParser {
                 games.add(trimmed);
             }
         }
-        System.out.println(games);
 
         whitePlayer = extractTagValue(pgn, "White");
         blackPlayer = extractTagValue(pgn, "Black");
-        String movesOnly = pgn.replaceAll("(?m)^\\[.*?\\]\\s*", "");
 
-        movesOnly = movesOnly.replaceAll("\\s*(1-0|0-1|1/2-1/2)\\s*$", "");
+        List<String> result = new ArrayList<>();
+        for (String iPgn: games) {
+            pgn = pgn.replaceAll("(?m)^\\[.*?\\]\\s*", "");
+            pgn = pgn.replaceAll("\\s*(1-0|0-1|1/2-1/2)\\s*$", "");
+            pgn = pgn.replaceAll("\\s+", " ").trim();
+            pgn = pgn.replaceAll("\\{[^}]*\\}", "");
+            pgn = pgn.replaceAll("\\d+\\.", "");
+            pgn = pgn.replaceAll("\\s+", " ").trim();
+            result.add(pgn);
 
-        movesOnly = movesOnly.replaceAll("\\s+", " ").trim();
-        pgn = movesOnly;
-        pgn = pgn.replaceAll("\\{[^}]*\\}", "");
-        pgn = pgn.replaceAll("\\d+\\.", "");
-        pgn = pgn.replaceAll("\\s+", " ").trim();
+        }
+        return result;
+    }
 
+    public static List<PGNMove> parseInList(String pgn) {
         String[] tokens = pgn.split(" ");
         boolean isWhite = false;
-        System.out.println(tokens.length);
+        List<PGNMove> moves = new ArrayList<>();
+
         for (String token : tokens) {
             PGNMove move = new PGNMove();
             isWhite = !isWhite;

@@ -76,7 +76,14 @@ public class Board  {
         this.gameWindow = gameWindow;
         this.PGN = PGN;
         if(PGN != null) {
-            moveList = PGNParser.parsePGN(PGN);
+            if(gameWindow == null) {
+                PGNParser.parsePGN(PGN).getFirst();
+                new Board(null,PGNParser.parsePGN(PGN).getFirst());
+            }
+            else{
+                moveList = PGNParser.parseInList(PGNParser.parsePGN(PGN).getFirst());
+
+            }
             whiteName = PGNParser.whitePlayer;
             blackName = PGNParser.blackPlayer;
         }
@@ -187,8 +194,10 @@ public class Board  {
         }
         else{
             PGNParser.PGNMove nextMove = moveList.removeFirst();
-            if(nextMove==null)
+            if(nextMove==null) {
+                System.out.println("VALID!");
                 gameWindow.incorrectPgnMessage("Error, No More Moves Left");
+            }
 
             int color = nextMove.isWhite?1:0;
 
