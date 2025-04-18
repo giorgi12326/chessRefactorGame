@@ -45,21 +45,24 @@ public class PGNParser {
         whitePlayer = extractTagValue(pgn, "White");
         blackPlayer = extractTagValue(pgn, "Black");
 
+
         List<String> result = new ArrayList<>();
+        System.out.println(games.size());
         for (String iPgn: games) {
-            pgn = pgn.replaceAll("(?m)^\\[.*?\\]\\s*", "");
-            pgn = pgn.replaceAll("\\s*(1-0|0-1|1/2-1/2)\\s*$", "");
-            pgn = pgn.replaceAll("\\s+", " ").trim();
-            pgn = pgn.replaceAll("\\{[^}]*\\}", "");
-            pgn = pgn.replaceAll("\\d+\\.", "");
-            pgn = pgn.replaceAll("\\s+", " ").trim();
-            result.add(pgn);
+            iPgn = iPgn.replaceAll("(?m)^\\[.*?\\]\\s*", "");
+            iPgn = iPgn.replaceAll("\\s*(1-0|0-1|1/2-1/2)\\s*$", "");
+            iPgn = iPgn.replaceAll("\\s+", " ").trim();
+            iPgn = iPgn.replaceAll("\\{[^}]*\\}", "");
+            iPgn = iPgn.replaceAll("\\d+\\.", "");
+            iPgn = iPgn.replaceAll("\\s+", " ").trim();
+            iPgn = iPgn.replaceAll("\\s*(1-0|0-1|1/2-1/2|\\*)\\s*", "").trim();
+            result.add(iPgn);
 
         }
         return result;
     }
 
-    public static List<PGNMove> parseInList(String pgn) {
+    public static List<PGNMove> parseInList(String pgn) throws InvalidPropertiesFormatException {
         String[] tokens = pgn.split(" ");
         boolean isWhite = false;
         List<PGNMove> moves = new ArrayList<>();
@@ -96,7 +99,7 @@ public class PGNParser {
                 if (move.isPromotion) move.promoteTo = promotion.charAt(0);
                 moves.add(move);
             }
-            else moves.add(move);
+            else throw new InvalidPropertiesFormatException("invalid format");
 
         }
         return moves;
@@ -114,6 +117,20 @@ public class PGNParser {
         else if(c == 'Q')
             return Queen.class;
         else return null;
+    }
+    public static List<String> splitPGNGames(String text) {
+        List<String> games = new ArrayList<>();
+
+        // Split based on "[Event" tag
+        String[] rawGames = text.split("(?=\\[Event )");
+
+        for (String raw : rawGames) {
+            String trimmed = raw.trim();
+            if (!trimmed.isEmpty()) {
+                games.add(trimmed);
+            }
+        }
+        return games;
     }
     private static String extractTagValue(String pgn, String tag) {
         Pattern pattern = Pattern.compile("\\[" + tag + " \"(.*?)\"\\]");

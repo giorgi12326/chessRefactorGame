@@ -7,8 +7,7 @@ import org.example.view.View;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class Board  {
@@ -42,14 +41,13 @@ public class Board  {
     public int currY;
     
     public CheckmateDetector cmd;
-    public final Controller controller;
-    public  final View view;
+    public  Controller controller;
+    public  View view;
 
     List<PGNParser.PGNMove> moveList;
     public String whiteName;
     public String blackName;
 
-    public boolean multipleGames = false;
 
     @Override
     public String toString() {
@@ -75,28 +73,37 @@ public class Board  {
     public Board(GameWindow gameWindow,String PGN) {
         this.gameWindow = gameWindow;
         this.PGN = PGN;
+        boolean shouldTryToCheckParsed = true;
         if(PGN != null) {
-            if(gameWindow == null) {
-                PGNParser.parsePGN(PGN).getFirst();
-                new Board(null,PGNParser.parsePGN(PGN).getFirst());
-            }
-            else{
+            try {
                 moveList = PGNParser.parseInList(PGNParser.parsePGN(PGN).getFirst());
+                System.out.println(moveList);
+            }
+            catch(NoSuchElementException e){
+                moveList = new ArrayList<>();
+                System.err.println("please enter valid pgn format");
+                shouldTryToCheckParsed = false;
+
+            } catch (InvalidPropertiesFormatException e) {
+                shouldTryToCheckParsed = false;
+                System.err.println("please enter valid pgn format");
 
             }
             whiteName = PGNParser.whitePlayer;
             blackName = PGNParser.blackPlayer;
         }
-
         board = new Square[8][8];
         Bpieces = new LinkedList<>();
         Wpieces = new LinkedList<>();
 
-        initializePieces();
+        if(shouldTryToCheckParsed) {
 
-        whiteTurn = true;
-        controller = new Controller(this);
-        view = new View(this);
+            initializePieces();
+
+            whiteTurn = true;
+            controller = new Controller(this);
+            view = new View(this);
+        }
 
     }
 
@@ -150,11 +157,13 @@ public class Board  {
         }
         
         cmd = new CheckmateDetector(this, Wpieces, Bpieces, wk, bk);
-        if(gameWindow == null)
-            while(!moveList.isEmpty() &&
-                moveList.getFirst().to != null){
+        if(gameWindow == null && moveList != null) {
+            while (!moveList.isEmpty() &&
+                    moveList.getFirst().to != null) {
                 reactToMousePress(null);
             }
+            System.out.println("valid");
+        }
     }
 
     public Square[][] getSquareArray() {
@@ -193,10 +202,17 @@ public class Board  {
             view.repaint();
         }
         else{
+            if(moveList.isEmpty()) {
+                System.out.println("VALID");
+                gameWindow.incorrectPgnMessage("Error, No More Moves Left");
+                return;
+            }
+
             PGNParser.PGNMove nextMove = moveList.removeFirst();
             if(nextMove==null) {
-                System.out.println("VALID!");
-                gameWindow.incorrectPgnMessage("Error, No More Moves Left");
+                gameWindow.incorrectPgnMessage("Error, No es Left");
+                return;
+
             }
 
             int color = nextMove.isWhite?1:0;
@@ -218,6 +234,10 @@ public class Board  {
                 return;
             }
             List<Piece> list;
+            if(nextMove.piece==null) {
+                System.out.println("BALID?");
+            }
+
 
 
             if(nextMove.isWhite) {
@@ -276,8 +296,6 @@ public class Board  {
 
 
     public void reactToMouseReleased(MouseEvent e) {
-
-
         if (currPiece != null) {
             Square sq = (Square) view.getComponentAt(new Point(e.getX(), e.getY()));
             if (currPiece.getColor() == 0 && whiteTurn)
@@ -359,7 +377,5 @@ public class Board  {
 
 
     public void reactToKeyPress(KeyEvent e) {
-        if(e.getExtendedKeyCode() == KeyEvent.VK_LEFT){
-        }
     }
 }

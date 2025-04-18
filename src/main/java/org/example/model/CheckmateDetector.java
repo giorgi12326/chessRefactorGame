@@ -191,7 +191,6 @@ public class CheckmateDetector {
     protected boolean canEvade(Map<Square,List<Piece>> tMoves, King tKing) {
         boolean evade = false;
         List<Square> kingsMoves = tKing.getLegalMoves(board);
-        System.out.println("call1");
 
         // If king is not threatened at some square, it can evade
         for (Square sq : kingsMoves) {
@@ -249,7 +248,6 @@ public class CheckmateDetector {
                         movableSquares.add(boardArray[i][kingSquare.getXNum()]);
                         for (Piece p : blockers) {
                             if (testMove(p,boardArray[i][kingSquare.getXNum()])) {
-                                System.out.println(p);
                                 blockable = true;
                             }
                         }

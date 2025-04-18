@@ -22,7 +22,6 @@ public class Pawn extends Piece {
 
         wasMoved = true;
         wasMovedLastTurn--;
-        System.out.println(idempotency + " " + enPassant);
         if(idempotency && enPassant != 0) {
             board.getSquareArray()[fin.getYNum() + 2*getColor()-1][fin.getXNum()].removePieceOnThis();
         }

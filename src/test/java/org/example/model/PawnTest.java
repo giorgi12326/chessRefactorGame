@@ -22,7 +22,7 @@ public class PawnTest {
     public void setup(){
 
 
-        board = new Board(null);
+        board = new Board(null,null);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 board.getSquareArray()[i][j].liftUpThePiece();
