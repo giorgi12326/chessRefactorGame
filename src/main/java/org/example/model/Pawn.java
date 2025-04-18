@@ -3,6 +3,9 @@ package org.example.model;
 import java.util.List;
 import java.util.LinkedList;
 
+import static org.example.model.Board.RESOURCES_BQUEEN_PNG;
+import static org.example.model.Board.RESOURCES_WQUEEN_PNG;
+
 public class Pawn extends Piece {
     private boolean wasMoved;
     public int wasMovedLastTurn;
@@ -24,6 +27,22 @@ public class Pawn extends Piece {
         wasMovedLastTurn--;
         if(idempotency && enPassant != 0) {
             board.getSquareArray()[fin.getYNum() + 2*getColor()-1][fin.getXNum()].removePieceOnThis();
+        }
+        if(idempotency){
+            if((getColor() == 0 && fin.getYNum() == 7) ||
+                (getColor() == 1 && fin.getYNum() == 0)){
+                Square square = getSquare();
+                square.removePieceOnThis();
+                Queen p = new Queen(getColor(), square, getColor() == 0 ? RESOURCES_BQUEEN_PNG :
+                        RESOURCES_WQUEEN_PNG);
+                square.put(p);
+                if(getColor() ==0)
+                    board.Bpieces.add(p);
+                else{
+                    board.Wpieces.add(p);
+                }
+
+            }
         }
         enPassant = 0;
         return b;
@@ -79,7 +98,6 @@ public class Pawn extends Piece {
                         ((Pawn) board[y][x - 1].getOccupyingPiece()).wasMovedLastTurn == 0 &&
 
                         y == 4) {
-                    System.out.println("asdfg");
                     legalMoves.add(board[y + 1][x - 1]);
                 }
             }
