@@ -251,8 +251,10 @@ public class Board  {
             if(size == 0){
                 gameWindow.incorrectPgnMessage("Error, That piece cant move to specified Spot");
             }
-            else if(size == 1)
+            else if(size == 1) {
+                captureLogic(nextMove);
                 list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+            }
             else{
                 String disambiguation = nextMove.disambiguation;
                 if(disambiguation.isEmpty()){
@@ -267,6 +269,7 @@ public class Board  {
                             gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on " + c);
                         }
                         else {
+                            captureLogic(nextMove);
                             list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
                         }
                     }
@@ -274,7 +277,10 @@ public class Board  {
                         List<Piece> list1 = list.stream().filter(t -> t.getSquare().getYNum() == 7-(c -'1')).toList();
                         if(list1.isEmpty())
                             gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on " + c);
-                        else list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                        else {
+                            captureLogic(nextMove);
+                            list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                        }
                     }
                 }
                 else{
@@ -284,7 +290,9 @@ public class Board  {
                             .toList();
                     if(list1.isEmpty())
                         System.out.println("couldnt find ambigious col move!");
-                    else list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                    else {
+                        captureLogic(nextMove);
+                        list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);}
 
                 }
 
@@ -292,6 +300,12 @@ public class Board  {
 
             cmd.update();
         }
+    }
+
+    private void captureLogic(PGNParser.PGNMove nextMove) {
+        if((nextMove.isCapture && !getSquareArray()[nextMove.to[0]][nextMove.to[1]].isOccupied())||
+        (!nextMove.isCapture && getSquareArray()[nextMove.to[0]][nextMove.to[1]].isOccupied()))
+            throw new InputMismatchException("capturing when not specified");
     }
 
 
