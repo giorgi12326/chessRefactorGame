@@ -76,7 +76,7 @@ public class PgnField implements Runnable {
             System.out.println("PGN input:\n" + pgn);
             String bn = blackInput.getText();
             String wn = whiteInput.getText();
-            new GameWindow(bn, wn, 0,0,0);
+            new GameWindow(bn, wn, 0,0,0,pgn);
 
             startWindow.dispose();
         });

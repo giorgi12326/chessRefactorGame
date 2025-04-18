@@ -26,7 +26,7 @@ public class GameWindow {
     
     
     public GameWindow(String blackName, String whiteName, int hh, 
-            int mm, int ss) {
+            int mm, int ss,String PGN) {
         
         blackClock = new Clock(hh, ss, mm);
         whiteClock = new Clock(hh, ss, mm);
@@ -51,7 +51,7 @@ public class GameWindow {
         gameData.setSize(gameData.getPreferredSize());
         gameWindow.add(gameData, BorderLayout.NORTH);
 
-        this.board = new Board(this);
+        this.board = new Board(this,PGN);
         
         gameWindow.add(board.view, BorderLayout.CENTER);
         
@@ -120,7 +120,7 @@ public class GameWindow {
                                 JOptionPane.YES_NO_OPTION);
 
                         if (n == JOptionPane.YES_OPTION) {
-                            new GameWindow(bn, wn, hh, mm, ss);
+                            new GameWindow(bn, wn, hh, mm, ss,null);
                             gameWindow.dispose();
                         } else gameWindow.dispose();
                     }
@@ -138,7 +138,7 @@ public class GameWindow {
                                 JOptionPane.YES_NO_OPTION);
 
                         if (n == JOptionPane.YES_OPTION) {
-                            new GameWindow(bn, wn, hh, mm, ss);
+                            new GameWindow(bn, wn, hh, mm, ss,null);
                             gameWindow.dispose();
                         } else gameWindow.dispose();
                     }

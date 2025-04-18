@@ -24,6 +24,9 @@ public class View extends JPanel {
 
         addMouseMotionListener(board.controller);
         addMouseListener(board.controller);
+        addKeyListener(board.controller);
+        setFocusable(true);
+        requestFocusInWindow();
 
 
         for (int x = 0; x < 8; x++) {

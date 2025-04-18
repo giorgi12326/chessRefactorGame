@@ -2,11 +2,9 @@ package org.example.controller;
 
 import org.example.model.Board;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 
-public class Controller implements MouseListener, MouseMotionListener {
+public class Controller implements MouseListener, KeyListener, MouseMotionListener {
     private final Board board;
 
     public Controller(Board board){
@@ -42,5 +40,21 @@ public class Controller implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        board.reactToKeyPress(e);
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }

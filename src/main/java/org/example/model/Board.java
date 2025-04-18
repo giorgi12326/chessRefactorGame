@@ -5,6 +5,7 @@ import org.example.view.GameWindow;
 import org.example.view.View;
 
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,8 +25,9 @@ public class Board  {
 	 public static final String RESOURCES_WQUEEN_PNG = "/wqueen.png";
 	 static final String RESOURCES_WPAWN_PNG = "/wpawn.png";
 	private static final String RESOURCES_BPAWN_PNG = "/bpawn.png";
-	
-	// Logical and graphical representations of board
+    private final String PGN;
+
+    // Logical and graphical representations of board
 	private final Square[][] board;
     private final GameWindow gameWindow;
     
@@ -43,6 +45,7 @@ public class Board  {
     public final Controller controller;
     public  final View view;
 
+    List<PGNParser.PGNMove> moveList;
 
     @Override
     public String toString() {
@@ -65,8 +68,12 @@ public class Board  {
                 '}';
     }
 
-    public Board(GameWindow gameWindow) {
+    public Board(GameWindow gameWindow,String PGN) {
         this.gameWindow = gameWindow;
+        this.PGN = PGN;
+        if(PGN != null)
+            moveList = PGNParser.parsePGN(PGN);
+
         board = new Square[8][8];
         Bpieces = new LinkedList<>();
         Wpieces = new LinkedList<>();
@@ -150,32 +157,96 @@ public class Board  {
 
 
     public void reactToMousePress(MouseEvent e) {
-        currX = e.getX()-24;
-        currY = e.getY()-24;
+        if(PGN == null) {
+            currX = e.getX() - 24;
+            currY = e.getY() - 24;
 
-        Square sq = (Square) view.getComponentAt(new Point(e.getX(), e.getY()));
+            Square sq = (Square) view.getComponentAt(new Point(e.getX(), e.getY()));
 
-        if (sq.isOccupied()) {
-            currPiece = sq.getOccupyingPiece();
-            if (currPiece.getColor() == 0 && whiteTurn)
-                return;
-            if (currPiece.getColor() == 1 && !whiteTurn)
-                return;
-            sq.setDisplay(false);
+            if (sq.isOccupied()) {
+                currPiece = sq.getOccupyingPiece();
+                if (currPiece.getColor() == 0 && whiteTurn)
+                    return;
+                if (currPiece.getColor() == 1 && !whiteTurn)
+                    return;
+                sq.setDisplay(false);
+            }
+            view.repaint();
         }
-        view.repaint();//?
+        else{
+            PGNParser.PGNMove nextMove = moveList.removeFirst();
+            System.out.println(nextMove.to[0]+ " " + nextMove.to[1]);
+            System.out.println(nextMove.piece);
+            if(nextMove.isWhite) {
+                System.out.println( cmd.wMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]) + " wmoVEs");
+                List<Piece> list = cmd.wMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
+                int size = list.size();
+                if(size == 0){
+                    if(nextMove.isCastleKingSide){
+                        if(getSquareArray()[7][4].isOccupied() &&
+                                getSquareArray()[7][4].getOccupyingPiece() instanceof King &&
+                                getSquareArray()[7][4].getOccupyingPiece().getColor() == 1)
+                            getSquareArray()[7][4].getOccupyingPiece().move(getSquareArray()[7][6]);
+                    }
+                    else if(nextMove.isCastleQueenSide){
+                        if(getSquareArray()[7][4].isOccupied() &&
+                                getSquareArray()[7][4].getOccupyingPiece() instanceof King &&
+                                getSquareArray()[7][4].getOccupyingPiece().getColor() == 1)
+                            getSquareArray()[7][4].getOccupyingPiece().move(getSquareArray()[7][2]);
+                    }
+                    else
+                        System.out.println("count find move!");
+
+                }
+                else if(size == 1)
+                    list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+            }
+            else{
+                List<Piece> list = cmd.bMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
+                int size = list.size();
+                if(size == 0){
+                    if(nextMove.isCastleKingSide){
+                        if(getSquareArray()[0][4].isOccupied() &&
+                                getSquareArray()[0][4].getOccupyingPiece() instanceof King &&
+                                getSquareArray()[0][4].getOccupyingPiece().getColor() == 0)
+                            getSquareArray()[0][4].getOccupyingPiece().move(getSquareArray()[0][6]);
+                        else if(nextMove.isCastleQueenSide){
+                            if(getSquareArray()[0][4].isOccupied() &&
+                                    getSquareArray()[0][4].getOccupyingPiece() instanceof King &&
+                                    getSquareArray()[0][4].getOccupyingPiece().getColor() == 0)
+                                getSquareArray()[0][4].getOccupyingPiece().move(getSquareArray()[0][2]);
+                        }
+                        else
+                            System.out.println("count find move!");
+                    }
+                }
+                else if(size == 1)
+                    list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+
+            }
+            cmd.update();
+        }
     }
 
 
     public void reactToMouseReleased(MouseEvent e) {
-        Square sq = (Square) view.getComponentAt(new Point(e.getX(), e.getY()));
-        if (currPiece != null) {
-            if (currPiece.getColor() == 0 && whiteTurn)
-                return;
-            if (currPiece.getColor() == 1 && !whiteTurn)
-                return;
 
+
+        if (currPiece != null) {
+            Square sq;
+            if(PGN == null) {
+                sq = (Square) view.getComponentAt(new Point(e.getX(), e.getY()));
+                if (currPiece.getColor() == 0 && whiteTurn)
+                    return;
+                if (currPiece.getColor() == 1 && !whiteTurn)
+                    return;
+            }
+            else{
+                System.out.println("asfghjk");
+                sq = getSquareArray()[4][0];
+            }
             List<Square> legalMoves = currPiece.getLegalMoves(this);
+
 
 //            List<Square> movable = cmd.getAllowableSquares(whiteTurn);
 
@@ -211,6 +282,7 @@ public class Board  {
                 currPiece = null;
             }
         }
+
 //        drawAttackSpots();
 
 
@@ -251,4 +323,8 @@ public class Board  {
     }
 
 
+    public void reactToKeyPress(KeyEvent e) {
+        if(e.getExtendedKeyCode() == KeyEvent.VK_LEFT){
+        }
+    }
 }
