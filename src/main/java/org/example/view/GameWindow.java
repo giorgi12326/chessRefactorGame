@@ -22,7 +22,7 @@ public class GameWindow {
     private Timer timer;
     
     private Board board;
-    
+
     
     
     public GameWindow(String blackName, String whiteName, int hh, 
@@ -104,6 +104,7 @@ public class GameWindow {
         if (!(hh == 0 && mm == 0 && ss == 0)) {
             timer = new Timer(1000, null);
             timer.addActionListener(e -> {
+
                 boolean turn = board.getTurn();
 
                 if (turn) {
@@ -216,6 +217,12 @@ public class GameWindow {
         buttons.setPreferredSize(buttons.getMinimumSize());
         
         return buttons;
+    }
+    public void incorrectPgnMessage(String message){
+        JOptionPane.showMessageDialog(gameWindow,
+                "invalid move made!",
+                message,
+                JOptionPane.PLAIN_MESSAGE);
     }
     
     public void checkmateOccurred (int c) {

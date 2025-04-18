@@ -5,7 +5,6 @@ import java.util.regex.*;
 public class PGNParser {
 
     public static class PGNMove {
-        public String from;
         public int[] to;
         public boolean isWhite;
         public String disambiguation;
@@ -19,7 +18,7 @@ public class PGNParser {
         public String toString() {
             if (isCastleKingSide) return "O-O";
             if (isCastleQueenSide) return "O-O-O";
-            return piece + ": " + from + " -> " + to + (isCapture ? " (x)" : "");
+            return piece + ": "  + " -> " + to + (isCapture ? " (x)" : "");
         }
     }
 
@@ -74,13 +73,10 @@ public class PGNParser {
 
                 // TODO: Find `from` square based on current board state
                 // For now we set it to null or placeholder:
-                move.from = "?";
                 moves.add(move);
             }
 
-        }
-
-        return moves;
+        }      return moves;
     }
 
     private static Class<?> parsePiece(char c) {

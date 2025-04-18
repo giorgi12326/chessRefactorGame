@@ -176,7 +176,6 @@ public class Board  {
         else{
             PGNParser.PGNMove nextMove = moveList.removeFirst();
             int color = nextMove.isWhite?1:0;
-            System.out.println(color);
 
             if(nextMove.isCastleKingSide){
                 if(getSquareArray()[color*7][4].isOccupied() &&
@@ -204,12 +203,46 @@ public class Board  {
             }
             int size = list.size();
             if(size == 0){
-                System.out.println("count find move!");
-
+                gameWindow.incorrectPgnMessage("Error, That piece cant move to specified Spot");
             }
             else if(size == 1)
                 list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+            else{
+                String disambiguation = nextMove.disambiguation;
+                if(disambiguation.isEmpty()){
+                    gameWindow.incorrectPgnMessage("cant resolve ambiguity");
+                }
+                else if(disambiguation.length() == 1){
+                    char c = disambiguation.charAt(0);
+                    if(c >= 'a' && c <= 'h'){
 
+                        List<Piece> list1 = list.stream().filter(t -> t.getSquare().getXNum() == c-'a').toList();
+                        if(list1.isEmpty()) {
+                            gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on " + c);
+                        }
+                        else {
+                            list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                        }
+                    }
+                    else if(c >= '1' && c <= '8'){
+                        List<Piece> list1 = list.stream().filter(t -> t.getSquare().getYNum() == 7-(c -'1')).toList();
+                        if(list1.isEmpty())
+                            gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on " + c);
+                        else list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                    }
+                }
+                else{
+                    List<Piece> list1 = list.stream()
+                            .filter(t -> t.getSquare().getXNum() == disambiguation.charAt(0)-'a')
+                            .filter(t -> t.getSquare().getYNum() == 7-(disambiguation.charAt(1)- '1'))
+                            .toList();
+                    if(list1.isEmpty())
+                        System.out.println("couldnt find ambigious col move!");
+                    else list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+
+                }
+
+            }
 
             cmd.update();
         }
@@ -220,23 +253,12 @@ public class Board  {
 
 
         if (currPiece != null) {
-            Square sq;
-            if(PGN == null) {
-                sq = (Square) view.getComponentAt(new Point(e.getX(), e.getY()));
-                if (currPiece.getColor() == 0 && whiteTurn)
-                    return;
-                if (currPiece.getColor() == 1 && !whiteTurn)
-                    return;
-            }
-            else{
-                System.out.println("asfghjk");
-                sq = getSquareArray()[4][0];
-            }
+            Square sq = (Square) view.getComponentAt(new Point(e.getX(), e.getY()));
+            if (currPiece.getColor() == 0 && whiteTurn)
+                return;
+            if (currPiece.getColor() == 1 && !whiteTurn)
+                return;
             List<Square> legalMoves = currPiece.getLegalMoves(this);
-
-
-//            List<Square> movable = cmd.getAllowableSquares(whiteTurn);
-
 
             if (legalMoves.contains(sq)
 //                    && movable.contains(sq)

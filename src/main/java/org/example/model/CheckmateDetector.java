@@ -97,17 +97,15 @@ public class CheckmateDetector {
 
         while (bIter.hasNext()) {
             Piece p = bIter.next();
-            if (!p.getClass().equals(King.class)) {
-                if (p.getSquare() == null) {
-                    bIter.remove();
-                    continue;
-                }
-                List<Square> mvs = p.getLegalMoves(board);
-                Iterator<Square> iter = mvs.iterator();
-                while (iter.hasNext()) {
-                    List<Piece> pieces = bMoves.get(iter.next());
-                    pieces.add(p);
-                }
+            if (p.getSquare() == null) {
+                bIter.remove();
+                continue;
+            }
+            List<Square> mvs = p.getLegalMoves(board);
+            Iterator<Square> iter = mvs.iterator();
+            while (iter.hasNext()) {
+                List<Piece> pieces = bMoves.get(iter.next());
+                pieces.add(p);
             }
         }
     }
