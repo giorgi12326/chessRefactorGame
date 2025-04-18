@@ -175,55 +175,36 @@ public class Board  {
         }
         else{
             PGNParser.PGNMove nextMove = moveList.removeFirst();
-            System.out.println(nextMove.to[0]+ " " + nextMove.to[1]);
-            System.out.println(nextMove.piece);
+            List<Piece> list;
             if(nextMove.isWhite) {
-                System.out.println( cmd.wMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]) + " wmoVEs");
-                List<Piece> list = cmd.wMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
-                int size = list.size();
-                if(size == 0){
-                    if(nextMove.isCastleKingSide){
-                        if(getSquareArray()[7][4].isOccupied() &&
-                                getSquareArray()[7][4].getOccupyingPiece() instanceof King &&
-                                getSquareArray()[7][4].getOccupyingPiece().getColor() == 1)
-                            getSquareArray()[7][4].getOccupyingPiece().move(getSquareArray()[7][6]);
-                    }
-                    else if(nextMove.isCastleQueenSide){
-                        if(getSquareArray()[7][4].isOccupied() &&
-                                getSquareArray()[7][4].getOccupyingPiece() instanceof King &&
-                                getSquareArray()[7][4].getOccupyingPiece().getColor() == 1)
-                            getSquareArray()[7][4].getOccupyingPiece().move(getSquareArray()[7][2]);
-                    }
-                    else
-                        System.out.println("count find move!");
-
-                }
-                else if(size == 1)
-                    list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                 list = cmd.wMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
             }
             else{
-                List<Piece> list = cmd.bMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
-                int size = list.size();
-                if(size == 0){
-                    if(nextMove.isCastleKingSide){
-                        if(getSquareArray()[0][4].isOccupied() &&
-                                getSquareArray()[0][4].getOccupyingPiece() instanceof King &&
-                                getSquareArray()[0][4].getOccupyingPiece().getColor() == 0)
-                            getSquareArray()[0][4].getOccupyingPiece().move(getSquareArray()[0][6]);
-                        else if(nextMove.isCastleQueenSide){
-                            if(getSquareArray()[0][4].isOccupied() &&
-                                    getSquareArray()[0][4].getOccupyingPiece() instanceof King &&
-                                    getSquareArray()[0][4].getOccupyingPiece().getColor() == 0)
-                                getSquareArray()[0][4].getOccupyingPiece().move(getSquareArray()[0][2]);
-                        }
-                        else
-                            System.out.println("count find move!");
-                    }
-                }
-                else if(size == 1)
-                    list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                list = cmd.bMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
 
             }
+            int size = list.size();
+            int color = nextMove.isWhite?1:0;
+            if(size == 0){
+                if(nextMove.isCastleKingSide){
+                    if(getSquareArray()[color*7][4].isOccupied() &&
+                            getSquareArray()[color*7][4].getOccupyingPiece() instanceof King &&
+                            getSquareArray()[color*7][4].getOccupyingPiece().getColor() == color)
+                        getSquareArray()[color*7][4].getOccupyingPiece().move(getSquareArray()[color*7][(color*2-1)*2+4]);
+                }
+                else if(nextMove.isCastleQueenSide){
+                    if(getSquareArray()[color*7][4].isOccupied() &&
+                            getSquareArray()[color*7][4].getOccupyingPiece() instanceof King &&
+                            getSquareArray()[color*7][4].getOccupyingPiece().getColor() == color)
+                        getSquareArray()[color*7][4].getOccupyingPiece().move(getSquareArray()[color*7][(color*2-1)*2+4]);
+                }
+                else
+                    System.out.println("count find move!");
+
+            }
+            else if(size == 1)
+                list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+
             cmd.update();
         }
     }
