@@ -149,6 +149,22 @@ public class PieceTest {
 
 
     }
+    @Test
+    public void move(){
+        Square initSquare = piece.getSquare();
+        Square fin = board.getSquareArray()[3][3];
+        piece.move(fin);
+        assertEquals(fin, piece.getSquare());
+        assertFalse(initSquare.isOccupied());
+        Queen queenOnSquare = createQueenOnSquare(0, 4, 4);
+
+        fin = board.getSquareArray()[4][4];
+        piece.move(fin);
+        assertNull(queenOnSquare.getSquare());
+        assertEquals(fin,piece.getSquare());
+        assertFalse(initSquare.isOccupied());
+    }
+
     private Queen createQueenOnSquare(int color,int h, int w){
         Queen p = new Queen(color, board.getSquareArray()[h][w], RESOURCES_WQUEEN_PNG);
         board.getSquareArray()[h][w].put(p);
@@ -159,4 +175,5 @@ public class PieceTest {
         return p;
 
     }
+
 }
