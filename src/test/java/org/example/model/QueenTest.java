@@ -79,14 +79,4 @@ public class QueenTest {
         assertTrue(legalMoves.containsAll(squares));
 
     }
-    private Queen createQueenOnSquare(int color,int h, int w){
-        Queen p = new Queen(color, board.getSquareArray()[h][w], RESOURCES_WQUEEN_PNG);
-        board.getSquareArray()[h][w].put(p);
-        if(color == 0)
-            checkmateDetector.bPieces.add(p);
-        else
-            checkmateDetector.wPieces.add(p);
-        return p;
-
-    }
 }
