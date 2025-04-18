@@ -46,6 +46,8 @@ public class Board  {
     public  final View view;
 
     List<PGNParser.PGNMove> moveList;
+    public String whiteName;
+    public String blackName;
 
     @Override
     public String toString() {
@@ -71,8 +73,11 @@ public class Board  {
     public Board(GameWindow gameWindow,String PGN) {
         this.gameWindow = gameWindow;
         this.PGN = PGN;
-        if(PGN != null)
+        if(PGN != null) {
             moveList = PGNParser.parsePGN(PGN);
+            whiteName = PGNParser.whitePlayer;
+            blackName = PGNParser.blackPlayer;
+        }
 
         board = new Square[8][8];
         Bpieces = new LinkedList<>();
@@ -177,6 +182,7 @@ public class Board  {
             PGNParser.PGNMove nextMove = moveList.removeFirst();
             int color = nextMove.isWhite?1:0;
 
+
             if(nextMove.isCastleKingSide){
                 if(getSquareArray()[color*7][4].isOccupied() &&
                         getSquareArray()[color*7][4].getOccupyingPiece() instanceof King &&
@@ -194,6 +200,8 @@ public class Board  {
                 return;
             }
             List<Piece> list;
+
+
             if(nextMove.isWhite) {
                  list = cmd.wMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
             }

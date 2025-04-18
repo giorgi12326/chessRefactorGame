@@ -45,14 +45,14 @@ public class GameWindow {
         
         
         gameWindow.setLayout(new BorderLayout(20,20));
-       
+
+        this.board = new Board(this,PGN);
         // Game Data window
-        JPanel gameData = gameDataPanel(blackName, whiteName, hh, mm, ss);
+        JPanel gameData = gameDataPanel(board.blackName, board.whiteName, hh, mm, ss);
         gameData.setSize(gameData.getPreferredSize());
         gameWindow.add(gameData, BorderLayout.NORTH);
 
-        this.board = new Board(this,PGN);
-        
+
         gameWindow.add(board.view, BorderLayout.CENTER);
         
         gameWindow.add(buttons(), BorderLayout.SOUTH);

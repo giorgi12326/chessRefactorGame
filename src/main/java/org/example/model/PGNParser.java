@@ -4,6 +4,9 @@ import java.util.regex.*;
 
 public class PGNParser {
 
+    public static String whitePlayer;
+    public static String blackPlayer;
+
     public static class PGNMove {
         public int[] to;
         public boolean isWhite;
@@ -22,7 +25,6 @@ public class PGNParser {
         }
     }
 
-    // Just converts board coordinates like e2 -> (row, col)
     public static int[] algebraicToCoords(String pos) {
         int file = pos.charAt(0) - 'a';
         int rank = 8 - Character.getNumericValue(pos.charAt(1));
@@ -31,8 +33,16 @@ public class PGNParser {
 
     public static List<PGNMove> parsePGN(String pgn) {
         List<PGNMove> moves = new ArrayList<>();
-        pgn = pgn.replaceAll("\\{[^}]*\\}", ""); // remove comments
-        pgn = pgn.replaceAll("\\d+\\.", "");     // remove move numbers
+        whitePlayer = extractTagValue(pgn, "White");
+        blackPlayer = extractTagValue(pgn, "Black");
+        String movesOnly = pgn.replaceAll("(?m)^\\[.*?\\]\\s*", "");
+
+        movesOnly = movesOnly.replaceAll("\\s*(1-0|0-1|1/2-1/2)\\s*$", "");
+
+        movesOnly = movesOnly.replaceAll("\\s+", " ").trim();
+        pgn = movesOnly;
+        pgn = pgn.replaceAll("\\{[^}]*\\}", "");
+        pgn = pgn.replaceAll("\\d+\\.", "");
         pgn = pgn.replaceAll("\\s+", " ").trim();
 
         String[] tokens = pgn.split(" ");
@@ -42,7 +52,6 @@ public class PGNParser {
             PGNMove move = new PGNMove();
             isWhite = !isWhite;
             move.isWhite = isWhite;
-
 
             if (token.equals("O-O")) {
                 move.isCastleKingSide = true;
@@ -54,7 +63,6 @@ public class PGNParser {
                 continue;
             }
 
-            // Regex to extract the move
             Pattern movePattern = Pattern.compile("([KQRBN])?([a-h]?[1-8]?)x?([a-h][1-8])(=([QRBN]))?([+#]?)");
             Matcher matcher = movePattern.matcher(token);
 
@@ -70,13 +78,12 @@ public class PGNParser {
                 move.isPromotion = promotion != null;
                 move.disambiguation = disambiguation;
                 if (move.isPromotion) move.promoteTo = promotion.charAt(0);
-
-                // TODO: Find `from` square based on current board state
-                // For now we set it to null or placeholder:
                 moves.add(move);
             }
+            else moves.add(move);
 
-        }      return moves;
+        }
+        return moves;
     }
 
     private static Class<?> parsePiece(char c) {
@@ -92,38 +99,12 @@ public class PGNParser {
             return Queen.class;
         else return null;
     }
-
-    public static void main(String[] args) {
-        // Example: Loading PGN
-        List<PGNParser.PGNMove> moveList = PGNParser.parsePGN("[Event \"Tbilisi FIDE GP 2015\"]\n" +
-                "[Site \"Tbilisi GEO\"]\n" +
-                "[Date \"2015.02.20\"]\n" +
-                "[Round \"5.6\"]\n" +
-                "[White \"Jobava,Ba\"]\n" +
-                "[Black \"Mamedyarov,S\"]\n" +
-                "[Result \"1-0\"]\n" +
-                "[WhiteTitle \"GM\"]\n" +
-                "[BlackTitle \"GM\"]\n" +
-                "[WhiteElo \"2696\"]\n" +
-                "[BlackElo \"2759\"]\n" +
-                "[ECO \"A01\"]\n" +
-                "[Opening \"Nimzovich-Larsen attack\"]\n" +
-                "[Variation \"Indian variation\"]\n" +
-                "[WhiteFideId \"13601520\"]\n" +
-                "[BlackFideId \"13401319\"]\n" +
-                "[EventDate \"2015.02.15\"]\n" +
-                " \n" +
-                "1. b3 Nf6 2. Bb2 g6 3. Nc3 Bg7 4. d4 c5 5. e3 cxd4 6. exd4 d5 7. Qd2 Nc6 8.\n" +
-                "O-O-O Qa5 9. f3 h5 10. Kb1 Bf5 11. Bd3 Nxd4 12. Nge2 Nxe2 13. Qxe2 Bd7 14. Rhe1\n" +
-                "e6 15. Bxg6 fxg6 16. Nxd5 Nxd5 17. Bxg7 Rg8 18. Qe5 Rxg7 19. Rxd5 Qb4 20. Rd6\n" +
-                "Kf8 21. Red1 Bc6 22. R1d4 Qb5 23. Rd8+ Rxd8 24. Rxd8+ Ke7 25. Qd6+ Kf6 26. Qd4+\n" +
-                "Kf7 27. Qf4+ Ke7 1-0");
-
-// Convert algebraic squares to your Square[][]
-        System.out.println(moveList);
-
-// Now find the right piece to move and call its move method
-// (you'll need from-coordinates too, which needs board state tracking logic)
-
+    private static String extractTagValue(String pgn, String tag) {
+        Pattern pattern = Pattern.compile("\\[" + tag + " \"(.*?)\"\\]");
+        Matcher matcher = pattern.matcher(pgn);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return "Not found";
     }
 }
