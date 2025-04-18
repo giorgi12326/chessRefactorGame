@@ -57,6 +57,95 @@ public class PieceTest {
         assertArrayEquals(new int[]{0,5,2,4},piece.getLinearOccupations(board.getSquareArray(), 2, 2));
         createQueenOnSquare(1,0,2);
         assertArrayEquals(new int[]{1,5,2,4},piece.getLinearOccupations(board.getSquareArray(), 2, 2));
+    }
+    @Test
+    public void testLegalDiagonalOccupations(){
+        assertTrue(List.of(
+                board.getSquareArray()[0][0],
+                board.getSquareArray()[1][1],
+                board.getSquareArray()[3][3],
+                board.getSquareArray()[4][4],
+                board.getSquareArray()[5][5],
+                board.getSquareArray()[6][6],
+                board.getSquareArray()[0][4],
+                board.getSquareArray()[1][3],
+                board.getSquareArray()[3][1],
+                board.getSquareArray()[4][0]
+        ).containsAll(piece.getDiagonalOccupations(board.getSquareArray(), 2, 2)));
+        assertTrue(piece.getDiagonalOccupations(board.getSquareArray(), 2, 2).containsAll(List.of(
+                board.getSquareArray()[0][0],
+                board.getSquareArray()[1][1],
+                board.getSquareArray()[3][3],
+                board.getSquareArray()[4][4],
+                board.getSquareArray()[5][5],
+                board.getSquareArray()[6][6],
+                board.getSquareArray()[0][4],
+                board.getSquareArray()[1][3],
+                board.getSquareArray()[3][1],
+                board.getSquareArray()[4][0]
+        )));
+        createQueenOnSquare(1,4,4);
+        assertTrue(List.of(
+                board.getSquareArray()[0][0],
+                board.getSquareArray()[1][1],
+                board.getSquareArray()[3][3],
+                board.getSquareArray()[0][4],
+                board.getSquareArray()[1][3],
+                board.getSquareArray()[3][1],
+                board.getSquareArray()[4][0]
+        ).containsAll(piece.getDiagonalOccupations(board.getSquareArray(), 2, 2)));
+        assertTrue(piece.getDiagonalOccupations(board.getSquareArray(), 2, 2).containsAll(List.of(
+                board.getSquareArray()[0][0],
+                board.getSquareArray()[1][1],
+                board.getSquareArray()[3][3],
+                board.getSquareArray()[0][4],
+                board.getSquareArray()[1][3],
+                board.getSquareArray()[3][1],
+                board.getSquareArray()[4][0]
+        )));
+        createQueenOnSquare(1,0,0);
+        assertTrue(List.of(
+                board.getSquareArray()[1][1],
+                board.getSquareArray()[3][3],
+                board.getSquareArray()[0][4],
+                board.getSquareArray()[1][3],
+                board.getSquareArray()[3][1],
+                board.getSquareArray()[4][0]
+        ).containsAll(piece.getDiagonalOccupations(board.getSquareArray(), 2, 2)));
+        assertTrue(piece.getDiagonalOccupations(board.getSquareArray(), 2, 2).containsAll(List.of(
+                board.getSquareArray()[1][1],
+                board.getSquareArray()[3][3],
+                board.getSquareArray()[0][4],
+                board.getSquareArray()[1][3],
+                board.getSquareArray()[3][1],
+                board.getSquareArray()[4][0]
+        )));
+        createQueenOnSquare(1,1,3);
+        assertTrue(List.of(
+                board.getSquareArray()[1][1],
+                board.getSquareArray()[3][3],
+                board.getSquareArray()[3][1],
+                board.getSquareArray()[4][0]
+        ).containsAll(piece.getDiagonalOccupations(board.getSquareArray(), 2, 2)));
+        assertTrue(piece.getDiagonalOccupations(board.getSquareArray(), 2, 2).containsAll(List.of(
+                board.getSquareArray()[1][1],
+                board.getSquareArray()[3][3],
+                board.getSquareArray()[3][1],
+                board.getSquareArray()[4][0]
+        )));
+        createQueenOnSquare(1,4,0);
+        assertTrue(List.of(
+                board.getSquareArray()[1][1],
+                board.getSquareArray()[3][3],
+                board.getSquareArray()[3][1]
+        ).containsAll(piece.getDiagonalOccupations(board.getSquareArray(), 2, 2)));
+        assertTrue(piece.getDiagonalOccupations(board.getSquareArray(), 2, 2).containsAll(List.of(
+                board.getSquareArray()[1][1],
+                board.getSquareArray()[3][3],
+                board.getSquareArray()[3][1]
+        )));
+
+
 
 
     }
