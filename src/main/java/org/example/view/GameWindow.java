@@ -220,8 +220,8 @@ public class GameWindow {
     }
     public void incorrectPgnMessage(String message){
         JOptionPane.showMessageDialog(gameWindow,
-                "invalid move made!",
                 message,
+                "Warning!",
                 JOptionPane.PLAIN_MESSAGE);
     }
     

@@ -49,6 +49,8 @@ public class Board  {
     public String whiteName;
     public String blackName;
 
+    public boolean multipleGames = false;
+
     @Override
     public String toString() {
         for (int i = 0; i < 8; i++) {
@@ -141,6 +143,11 @@ public class Board  {
         }
         
         cmd = new CheckmateDetector(this, Wpieces, Bpieces, wk, bk);
+        if(gameWindow == null)
+            while(!moveList.isEmpty() &&
+                moveList.getFirst().to != null){
+                reactToMousePress(null);
+            }
     }
 
     public Square[][] getSquareArray() {
@@ -180,8 +187,10 @@ public class Board  {
         }
         else{
             PGNParser.PGNMove nextMove = moveList.removeFirst();
-            int color = nextMove.isWhite?1:0;
+            if(nextMove==null)
+                gameWindow.incorrectPgnMessage("Error, No More Moves Left");
 
+            int color = nextMove.isWhite?1:0;
 
             if(nextMove.isCastleKingSide){
                 if(getSquareArray()[color*7][4].isOccupied() &&

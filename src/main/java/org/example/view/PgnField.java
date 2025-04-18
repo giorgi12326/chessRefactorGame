@@ -1,5 +1,7 @@
 package org.example.view;
 
+import org.example.model.Board;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -26,28 +28,7 @@ public class PgnField implements Runnable {
         final JPanel playerPanel = new JPanel();
         components.add(playerPanel);
 
-        final JLabel blackPiece = new JLabel();
-        try {
-            Image blackImg = ImageIO.read(getClass().getResource("/bp.png"));
-            blackPiece.setIcon(new ImageIcon(blackImg));
-        } catch (Exception e) {
-            System.out.println("Missing: bp.png");
-        }
-        playerPanel.add(blackPiece);
-        final JTextField blackInput = new JTextField("Black", 10);
-        playerPanel.add(blackInput);
 
-        final JLabel whitePiece = new JLabel();
-        try {
-            Image whiteImg = ImageIO.read(getClass().getResource("/wp.png"));
-            whitePiece.setIcon(new ImageIcon(whiteImg));
-            startWindow.setIconImage(whiteImg); // <- This was cut off before
-        } catch (Exception e) {
-            System.out.println("Missing: wp.png");
-        }
-        playerPanel.add(whitePiece);
-        final JTextField whiteInput = new JTextField("White", 10);
-        playerPanel.add(whiteInput);
 
         // PGN Input Field
         JPanel pgnPanel = new JPanel();
@@ -67,16 +48,24 @@ public class PgnField implements Runnable {
         components.add(pgnPanel);
 
         // Load PGN Button
-        JButton loadButton = new JButton("Load PGN");
+        JButton loadButton = new JButton("Simulate One PGN");
         loadButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         components.add(loadButton);
 
         loadButton.addActionListener(e -> {
             String pgn = pgnTextArea.getText();
-            System.out.println("PGN input:\n" + pgn);
-            String bn = blackInput.getText();
-            String wn = whiteInput.getText();
-            new GameWindow(bn, wn, 0,0,0,pgn);
+            new GameWindow("bn", "wn", 0,0,0,pgn);
+
+            startWindow.dispose();
+        });
+        JButton loadButton1 = new JButton("Test Validity Of Games");
+        loadButton1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        components.add(loadButton1);
+
+        loadButton1.addActionListener(e -> {
+            String pgn = pgnTextArea.getText();
+
+            new Board(null, pgn);
 
             startWindow.dispose();
         });

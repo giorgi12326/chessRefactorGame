@@ -33,6 +33,17 @@ public class PGNParser {
 
     public static List<PGNMove> parsePGN(String pgn) {
         List<PGNMove> moves = new ArrayList<>();
+        List<String> games = new ArrayList<>();
+        String[] gameArray = pgn.split("(?=\\[Event )");
+
+        for (String game : gameArray) {
+            String trimmed = game.trim();
+            if (!trimmed.isEmpty()) {
+                games.add(trimmed);
+            }
+        }
+        System.out.println(games);
+
         whitePlayer = extractTagValue(pgn, "White");
         blackPlayer = extractTagValue(pgn, "Black");
         String movesOnly = pgn.replaceAll("(?m)^\\[.*?\\]\\s*", "");
@@ -47,7 +58,7 @@ public class PGNParser {
 
         String[] tokens = pgn.split(" ");
         boolean isWhite = false;
-
+        System.out.println(tokens.length);
         for (String token : tokens) {
             PGNMove move = new PGNMove();
             isWhite = !isWhite;

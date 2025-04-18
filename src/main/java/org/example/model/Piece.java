@@ -31,7 +31,6 @@ public abstract class Piece {
     }
     
     public boolean move(Square fin) {
-        System.out.println(fin + " "  +this);
         Piece occup = fin.getOccupyingPiece();
         if(this instanceof Pawn && !fin.isOccupied())
             ((Pawn) this).enPassant = fin.getXNum() - getSquare().getXNum();
