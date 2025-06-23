@@ -3,12 +3,13 @@ package org.example.model;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
-public abstract class Piece {
+public abstract class Piece implements Serializable {
     //1 for white 0 for black
     private final int color;
     private Square currentSquare;
@@ -21,13 +22,6 @@ public abstract class Piece {
         this.color = color;
         this.currentSquare = initSq;
         
-        try {
-            if (this.img == null) {
-              this.img = ImageIO.read(getClass().getResource(img_file));
-            }
-        } catch (IOException e) {
-        System.out.println("File not found: " + e.getMessage());
-        }
     }
     
     public boolean move(Square fin) {

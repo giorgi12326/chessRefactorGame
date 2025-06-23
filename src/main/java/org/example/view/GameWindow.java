@@ -8,12 +8,13 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
 
-public class GameWindow {
+public class GameWindow implements Serializable {
     private JFrame gameWindow;
     
     public Clock blackClock;
@@ -21,7 +22,7 @@ public class GameWindow {
     
     private Timer timer;
     
-    private Board board;
+    public Board board;
 
     
     

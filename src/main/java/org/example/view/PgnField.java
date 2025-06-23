@@ -3,9 +3,10 @@ package org.example.view;
 import org.example.model.BoardContext;
 
 import java.awt.*;
+import java.io.Serializable;
 import javax.swing.*;
 
-public class PgnField implements Runnable {
+public class PgnField implements Runnable , Serializable {
     public void run() {
         final JFrame startWindow = new JFrame("Chess");
         startWindow.setLocation(300, 100);

@@ -1,5 +1,6 @@
 package org.example.model;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * @author Jussi Lundstedt
  *
  */
-public class CheckmateDetector {
+public class CheckmateDetector implements Serializable {
     private final Board board;
      final LinkedList<Piece> wPieces;
      final LinkedList<Piece> bPieces;

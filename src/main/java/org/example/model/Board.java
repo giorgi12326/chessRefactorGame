@@ -7,10 +7,11 @@ import org.example.view.View;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
 import java.util.*;
 
 @SuppressWarnings("serial")
-public class Board  {
+public class Board implements Serializable {
 	// Resource location constants for piece images
     private static final String RESOURCES_WBISHOP_PNG = "/wbishop.png";
 	private static final String RESOURCES_BBISHOP_PNG = "/bbishop.png";

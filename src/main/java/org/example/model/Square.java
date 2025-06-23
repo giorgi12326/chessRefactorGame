@@ -1,9 +1,10 @@
 package org.example.model;
 
 import javax.swing.*;
+import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class Square extends JComponent {
+public class Square extends JComponent implements Serializable {
     private Board b;
     
     private final int color;

@@ -1,6 +1,8 @@
 package org.example.model;
 
-public class Clock {
+import java.io.Serializable;
+
+public class Clock  implements Serializable {
     private int hh;
     private int mm;
     private int ss;

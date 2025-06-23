@@ -1,10 +1,13 @@
 package org.example.view;
 
+import org.example.model.Game;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -17,7 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class StartMenu implements Runnable {
+public class StartMenu implements Runnable , Serializable {
+    public GameWindow gameWindow;
     public void run() {
         final JFrame startWindow = new JFrame("Chess");
         // Set window properties
@@ -135,7 +139,8 @@ public class StartMenu implements Runnable {
                 int mm = Integer.parseInt((String) minutes.getSelectedItem());
                 int ss = Integer.parseInt((String) seconds.getSelectedItem());
                 
-                new GameWindow(bn, wn, hh, mm, ss,null);
+                gameWindow = new GameWindow(bn, wn, hh, mm, ss,null);
+                Game.gameWindow = gameWindow;
                 startWindow.dispose();
             }
           });

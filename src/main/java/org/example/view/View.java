@@ -7,10 +7,11 @@ import org.example.model.Square;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 
 import static org.example.model.Board.RESOURCES_WQUEEN_PNG;
 
-public class View extends JPanel {
+public class View extends JPanel implements Serializable {
     private final Board board;
 
     public View(Board board){

@@ -3,8 +3,9 @@ package org.example.controller;
 import org.example.model.Board;
 
 import java.awt.event.*;
+import java.io.Serializable;
 
-public class Controller implements MouseListener, KeyListener, MouseMotionListener {
+public class Controller implements MouseListener, KeyListener, MouseMotionListener, Serializable {
     private final Board board;
 
     public Controller(Board board){
