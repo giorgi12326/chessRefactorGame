@@ -1,10 +1,12 @@
 package org.example.model;
 
+import org.example.dtos.Message;
 import org.example.dtos.SquareDto;
 import org.example.view.GameWindow;
 import org.example.view.StartMenu;
 
 import javax.swing.*;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
@@ -17,15 +19,17 @@ import java.net.Socket;
 
 public class Game implements Runnable {
     public static GameWindow gameWindow;
+    public static StartMenu doRun;
+    static Board board;
 
     public void run() {
-
-        StartMenu doRun = new StartMenu();
-        if(gameWindow != null)
-            gameWindow = doRun.gameWindow;
-        else
-            System.out.println("nogamewondoe");
-        SwingUtilities.invokeLater(doRun);
+        board = new Board(null,null);
+//        doRun = new StartMenu();
+//        if(gameWindow != null)
+//            gameWindow = doRun.gameWindow;
+//        else
+//            System.out.println("nogamewondoe");
+//        SwingUtilities.invokeLater(doRun);
     }
     
     public static void main(String[] args) {
@@ -42,15 +46,24 @@ public class Game implements Runnable {
 
             while (true) {
                 try {
-                    Object obj = in.readObject();
-                    System.out.println(obj);
+                    System.out.println();
+                    if(in.readObject() instanceof Message obj) {
+                        if (obj.type.equals("mousePress"))
+                            board.reactToMousePressDto((SquareDto) obj.getPayload());
+                        if (obj.type.equals("mouseRelease"))
+                            board.reactToMouseReleasedDto((SquareDto) obj.getPayload());
+                    }
 
                     String reply = new String("Server");
-                    Square[][] squareArray = gameWindow.board.getSquareArray();
+                    Square[][] squareArray = board.getSquareArray();
                     SquareDto[][] dtos = new SquareDto[8][8];
                     for (int i = 0; i < 8; i++) {
                         for (int j = 0; j < 8; j++) {
-                            dtos[i][j] = new SquareDto(squareArray[i][j].getXNum(),'A','P');
+                            Piece occupyingPiece = squareArray[i][j].getOccupyingPiece();
+                            if(occupyingPiece != null)
+                                dtos[i][j] = new SquareDto(squareArray[i][j].getXNum(),'A',
+                                    PGNParser.getPieceChar(occupyingPiece.getClass()),
+                                        occupyingPiece.getColor());
                         }
                     }
 

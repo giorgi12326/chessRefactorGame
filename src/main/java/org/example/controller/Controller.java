@@ -15,7 +15,7 @@ public class Controller implements MouseListener, KeyListener, MouseMotionListen
     @Override
     public void mousePressed(MouseEvent e) {
 
-        board.reactToMousePress(e);
+//        board.reactToMousePress(e);
     }
 
     @Override

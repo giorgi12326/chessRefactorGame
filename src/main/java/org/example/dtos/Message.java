@@ -7,9 +7,7 @@ import java.io.Serializable;
 
 @AllArgsConstructor
 @Getter
-public class SquareDto implements Serializable {
-    int x;
-    int y;
-    char piece;
-    int pieceColor;
+public class Message implements Serializable {
+    public String type;
+    public Object payload;
 }

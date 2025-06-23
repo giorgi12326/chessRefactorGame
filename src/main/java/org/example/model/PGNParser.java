@@ -118,6 +118,24 @@ public class PGNParser {
             return Queen.class;
         else return null;
     }
+
+    public static char getPieceChar(Class<?> pieceClass) {
+        if (pieceClass == Rook.class)
+            return 'R';
+        else if (pieceClass == Bishop.class)
+            return 'B';
+        else if (pieceClass == King.class)
+            return 'K';
+        else if (pieceClass == Knight.class)
+            return 'N';
+        else if (pieceClass == Queen.class)
+            return 'Q';
+        else if (pieceClass == Pawn.class)
+            return 'P';
+        else
+            return '?'; // or throw exception / return '\0'
+    }
+
     public static List<String> splitPGNGames(String text) {
         List<String> games = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package org.example.view;
 
+import org.example.model.Board;
 import org.example.model.Game;
 
 import java.awt.BorderLayout;
@@ -133,15 +134,7 @@ public class StartMenu implements Runnable , Serializable {
         
         start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String bn = blackInput.getText();
-                String wn = whiteInput.getText();
-                int hh = Integer.parseInt((String) hours.getSelectedItem());
-                int mm = Integer.parseInt((String) minutes.getSelectedItem());
-                int ss = Integer.parseInt((String) seconds.getSelectedItem());
-                
-                gameWindow = new GameWindow(bn, wn, hh, mm, ss,null);
-                Game.gameWindow = gameWindow;
-                startWindow.dispose();
+                startGame();
             }
           });
         final JButton pgnParser = new JButton("pgnParser");
@@ -158,7 +151,7 @@ public class StartMenu implements Runnable , Serializable {
             }
         });
 
-        
+
         buttons.add(start);
         buttons.add(Box.createHorizontalStrut(10));
         buttons.add(instr);
@@ -173,5 +166,9 @@ public class StartMenu implements Runnable , Serializable {
 
         startWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         startWindow.setVisible(true);
+    }
+
+    public void startGame() {
+        new Board(null,null);
     }
 }
