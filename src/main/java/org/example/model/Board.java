@@ -127,10 +127,10 @@ public class Board implements Serializable {
             board[1][x].put(new Pawn(0, board[1][x], RESOURCES_BPAWN_PNG,this));
             board[6][x].put(new Pawn(1, board[6][x], RESOURCES_WPAWN_PNG,this));
         }
-        
+
         board[7][3].put(new Queen(1, board[7][3], RESOURCES_WQUEEN_PNG));
         board[0][3].put(new Queen(0, board[0][3], RESOURCES_BQUEEN_PNG));
-        
+
         King bk = new King(0, board[0][4], RESOURCES_BKING_PNG,this);
         King wk = new King(1, board[7][4], RESOURCES_WKING_PNG,this);
         board[0][4].put(bk);
@@ -150,8 +150,8 @@ public class Board implements Serializable {
         board[0][5].put(new Bishop(0, board[0][5], RESOURCES_BBISHOP_PNG));
         board[7][2].put(new Bishop(1, board[7][2], RESOURCES_WBISHOP_PNG));
         board[7][5].put(new Bishop(1, board[7][5], RESOURCES_WBISHOP_PNG));
-        
-        
+
+
         for(int y = 0; y < 2; y++) {
             for (int x = 0; x < 8; x++) {
                 Bpieces.add(board[y][x].getOccupyingPiece());
@@ -380,6 +380,8 @@ public class Board implements Serializable {
             System.out.println();
             sq.setDisplay(true);
             currPiece.move(sq);
+
+            Game.didMoveWentThough = true;
 
             cmd.update();
 

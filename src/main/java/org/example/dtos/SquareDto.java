@@ -10,6 +10,4 @@ import java.io.Serializable;
 public class SquareDto implements Serializable {
     int x;
     int y;
-    char piece;
-    int pieceColor;
 }

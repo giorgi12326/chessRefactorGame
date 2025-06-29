@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class Game {
     public static GameWindow gameWindow;
@@ -23,7 +24,7 @@ public class Game {
     static Board board;
     static ObjectInputStream in;
     static ObjectOutputStream out;
-
+    public static boolean didMoveWentThough = false;
     
     public static void main(String[] args) {
         board = new Board(null,null);
@@ -41,11 +42,15 @@ public class Game {
                 try {
                     sendBoardToClient();
 
+                    didMoveWentThough = false;
+
                     if(in.readObject() instanceof Message obj) {
-                        if (obj.type.equals("mousePress"))
-                            board.reactToMousePressDto((SquareDto) obj.getPayload());
-                        if (obj.type.equals("mouseRelease"))
-                            board.reactToMouseReleasedDto((SquareDto) obj.getPayload());
+                        if (obj.type.equals("mouseRelease")) {
+
+                            SquareDto[] payload = (SquareDto[]) obj.getPayload();
+                            board.setCurrPiece(board.getSquareArray()[payload[0].getX()][payload[0].getY()].getOccupyingPiece());
+                            board.reactToMouseReleasedDto(payload[1]);
+                        }
                     }
                 } catch (EOFException e) {
                     System.out.println("Client disconnected.");
@@ -55,23 +60,23 @@ public class Game {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+
     }
 
     private static void sendBoardToClient() throws IOException {
-        Square[][] squareArray = board.getSquareArray();
-        SquareDto[][] dtos = new SquareDto[8][8];
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                Piece occupyingPiece = squareArray[i][j].getOccupyingPiece();
-                if(occupyingPiece != null)
-                    dtos[i][j] = new SquareDto(squareArray[i][j].getXNum(),'A',
-                        PGNParser.getPieceChar(occupyingPiece.getClass()),
-                            occupyingPiece.getColor());
-            }
-        }
+//        Square[][] squareArray = board.getSquareArray();
+//        SquareDto[][] dtos = new SquareDto[8][8];
+//        for (int i = 0; i < 8; i++) {
+//            for (int j = 0; j < 8; j++) {
+//                Piece occupyingPiece = squareArray[i][j].getOccupyingPiece();
+//                if(occupyingPiece != null)
+//                    dtos[i][j] = new SquareDto(squareArray[i][j].getXNum(),'A',
+//                        PGNParser.getPieceChar(occupyingPiece.getClass()),
+//                            occupyingPiece.getColor());
+//            }
+//        }
 
-        System.out.println(dtos);
-        out.writeObject(dtos);
+        out.writeObject(didMoveWentThough);
         out.flush();
         System.out.println("board sent!");
 
