@@ -17,23 +17,16 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Game implements Runnable {
+public class Game {
     public static GameWindow gameWindow;
     public static StartMenu doRun;
     static Board board;
+    static ObjectInputStream in;
+    static ObjectOutputStream out;
 
-    public void run() {
-        board = new Board(null,null);
-//        doRun = new StartMenu();
-//        if(gameWindow != null)
-//            gameWindow = doRun.gameWindow;
-//        else
-//            System.out.println("nogamewondoe");
-//        SwingUtilities.invokeLater(doRun);
-    }
     
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Game());
+        board = new Board(null,null);
 
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
             System.out.println("Server listening...");
@@ -41,44 +34,46 @@ public class Game implements Runnable {
             Socket socket = serverSocket.accept();
             System.out.println("Client connected.");
 
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
 
             while (true) {
                 try {
-                    System.out.println();
+                    sendBoardToClient();
+
                     if(in.readObject() instanceof Message obj) {
                         if (obj.type.equals("mousePress"))
                             board.reactToMousePressDto((SquareDto) obj.getPayload());
                         if (obj.type.equals("mouseRelease"))
                             board.reactToMouseReleasedDto((SquareDto) obj.getPayload());
                     }
-
-                    String reply = new String("Server");
-                    Square[][] squareArray = board.getSquareArray();
-                    SquareDto[][] dtos = new SquareDto[8][8];
-                    for (int i = 0; i < 8; i++) {
-                        for (int j = 0; j < 8; j++) {
-                            Piece occupyingPiece = squareArray[i][j].getOccupyingPiece();
-                            if(occupyingPiece != null)
-                                dtos[i][j] = new SquareDto(squareArray[i][j].getXNum(),'A',
-                                    PGNParser.getPieceChar(occupyingPiece.getClass()),
-                                        occupyingPiece.getColor());
-                        }
-                    }
-
-                    System.out.println(dtos);
-                    out.writeObject(dtos);
-                    out.flush();
-
                 } catch (EOFException e) {
                     System.out.println("Client disconnected.");
                     break;
                 }
             }
-
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void sendBoardToClient() throws IOException {
+        Square[][] squareArray = board.getSquareArray();
+        SquareDto[][] dtos = new SquareDto[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Piece occupyingPiece = squareArray[i][j].getOccupyingPiece();
+                if(occupyingPiece != null)
+                    dtos[i][j] = new SquareDto(squareArray[i][j].getXNum(),'A',
+                        PGNParser.getPieceChar(occupyingPiece.getClass()),
+                            occupyingPiece.getColor());
+            }
+        }
+
+        System.out.println(dtos);
+        out.writeObject(dtos);
+        out.flush();
+        System.out.println("board sent!");
+
     }
 }
