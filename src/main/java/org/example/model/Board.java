@@ -75,7 +75,6 @@ public class Board implements Serializable {
     public Board(GameWindow gameWindow,String PGN) {
         this.gameWindow = gameWindow;
         this.PGN = PGN;
-        System.out.println("kaka");
         boolean shouldTryToCheckParsed = true;
         if(PGN != null) {
             try {
@@ -232,102 +231,106 @@ public class Board implements Serializable {
         }
     }
 
-    private void elsePart() {
-        if(moveList.isEmpty()) {
-            gameWindow.incorrectPgnMessage("Error, No More Moves Left");
-            return;
-        }
+    public boolean elsePart() {
 
-        PGNParser.PGNMove nextMove = moveList.removeFirst();
-        if(nextMove==null) {
-            gameWindow.incorrectPgnMessage("Error, No es Left");
-            return;
+        while(!moveList.isEmpty()) {
 
-        }
+            PGNParser.PGNMove nextMove = moveList.removeFirst();
+            if (nextMove == null) {
+                gameWindow.incorrectPgnMessage("Error, No es Left");
+                break;
 
-        int color = nextMove.isWhite?1:0;
-
-        if(nextMove.isCastleKingSide){
-            if(getSquareArray()[color*7][4].isOccupied() &&
-                    getSquareArray()[color*7][4].getOccupyingPiece() instanceof King &&
-                    getSquareArray()[color*7][4].getOccupyingPiece().getColor() == color)
-                getSquareArray()[color*7][4].getOccupyingPiece().move(getSquareArray()[color*7][6]);
-            return;
-
-        }
-        else if(nextMove.isCastleQueenSide){
-            if(getSquareArray()[color*7][4].isOccupied() &&
-                    getSquareArray()[color*7][4].getOccupyingPiece() instanceof King &&
-                    getSquareArray()[color*7][4].getOccupyingPiece().getColor() == color) {
-                getSquareArray()[color * 7][4].getOccupyingPiece().move(getSquareArray()[color * 7][2]);
             }
-            return;
-        }
-        List<Piece> list;
-        if(nextMove.piece==null) {
-            System.out.println("BALID?");
-        }
 
+            int color = nextMove.isWhite ? 1 : 0;
 
-        if(nextMove.isWhite) {
-             list = cmd.wMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
-        }
-        else{
-            list = cmd.bMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
+            if (nextMove.isCastleKingSide) {
+                if (getSquareArray()[color * 7][4].isOccupied() &&
+                        getSquareArray()[color * 7][4].getOccupyingPiece() instanceof King &&
+                        getSquareArray()[color * 7][4].getOccupyingPiece().getColor() == color)
+                    getSquareArray()[color * 7][4].getOccupyingPiece().move(getSquareArray()[color * 7][6]);
+                continue;
 
-        }
-        int size = list.size();
-        if(size == 0){
-            gameWindow.incorrectPgnMessage("Error, That piece cant move to specified Spot");
-        }
-        else if(size == 1) {
-            captureLogic(nextMove);
-            list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
-        }
-        else{
-            String disambiguation = nextMove.disambiguation;
-            if(disambiguation.isEmpty()){
-                gameWindow.incorrectPgnMessage("cant resolve ambiguity");
+            } else if (nextMove.isCastleQueenSide) {
+                if (getSquareArray()[color * 7][4].isOccupied() &&
+                        getSquareArray()[color * 7][4].getOccupyingPiece() instanceof King &&
+                        getSquareArray()[color * 7][4].getOccupyingPiece().getColor() == color) {
+                    getSquareArray()[color * 7][4].getOccupyingPiece().move(getSquareArray()[color * 7][2]);
+                }
+                continue;
             }
-            else if(disambiguation.length() == 1){
-                char c = disambiguation.charAt(0);
-                if(c >= 'a' && c <= 'h'){
+            List<Piece> list;
 
-                    List<Piece> list1 = list.stream().filter(t -> t.getSquare().getXNum() == c-'a').toList();
-                    if(list1.isEmpty()) {
-                        gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on " + c);
+            if (nextMove.isWhite) {
+                list = cmd.wMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
+            } else {
+                list = cmd.bMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> nextMove.piece.isInstance(t)).toList();
+
+            }
+            int size = list.size();
+            if (size == 0) {
+                System.out.println("NOT VALID");
+                gameWindow.incorrectPgnMessage("Error, That piece cant move to specified Spot");
+                return false;
+            } else if (size == 1) {
+                captureLogic(nextMove);
+                list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+            } else {
+                String disambiguation = nextMove.disambiguation;
+                if (disambiguation.isEmpty()) {
+                    System.out.println("NOT VALID");
+
+                    gameWindow.incorrectPgnMessage("cant resolve ambiguity");
+                    return false;
+                } else if (disambiguation.length() == 1) {
+                    char c = disambiguation.charAt(0);
+                    if (c >= 'a' && c <= 'h') {
+
+                        List<Piece> list1 = list.stream().filter(t -> t.getSquare().getXNum() == c - 'a').toList();
+                        if (list1.isEmpty()) {
+                            System.out.println("NOT VALID");
+
+                            gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on " + c);
+                            return false;
+
+                        } else {
+                            captureLogic(nextMove);
+                            list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                        }
+                    } else if (c >= '1' && c <= '8') {
+                        List<Piece> list1 = list.stream().filter(t -> t.getSquare().getYNum() == 7 - (c - '1')).toList();
+                        if (list1.isEmpty()) {
+                            System.out.println("NOT VALID");
+
+                            gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on " + c);
+                            return false;
+                        }
+                        else {
+                            captureLogic(nextMove);
+                            list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                        }
                     }
+                } else {
+                    List<Piece> list1 = list.stream()
+                            .filter(t -> t.getSquare().getXNum() == disambiguation.charAt(0) - 'a')
+                            .filter(t -> t.getSquare().getYNum() == 7 - (disambiguation.charAt(1) - '1'))
+                            .toList();
+                    if (list1.isEmpty()) {
+                        System.out.println("NOT VALID");
+
+                        gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on ");
+                        return false;                    }
                     else {
                         captureLogic(nextMove);
                         list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
                     }
-                }
-                else if(c >= '1' && c <= '8'){
-                    List<Piece> list1 = list.stream().filter(t -> t.getSquare().getYNum() == 7-(c -'1')).toList();
-                    if(list1.isEmpty())
-                        gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on " + c);
-                    else {
-                        captureLogic(nextMove);
-                        list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
-                    }
+
                 }
             }
-            else{
-                List<Piece> list1 = list.stream()
-                        .filter(t -> t.getSquare().getXNum() == disambiguation.charAt(0)-'a')
-                        .filter(t -> t.getSquare().getYNum() == 7-(disambiguation.charAt(1)- '1'))
-                        .toList();
-                if(list1.isEmpty())
-                    System.out.println("couldnt find ambigious col move!");
-                else {
-                    captureLogic(nextMove);
-                    list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);}
-
-            }
-
+            cmd.update();
         }
+        return true;
 
-        cmd.update();
     }
 
     private void captureLogic(PGNParser.PGNMove nextMove) {

@@ -27,7 +27,6 @@ public class Game {
     public static boolean didMoveWentThough = false;
     
     public static void main(String[] args) {
-        board = new Board(null,null);
 
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
             System.out.println("Server listening...");
@@ -38,6 +37,16 @@ public class Game {
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
 
+            if(in.readObject() instanceof Message obj) {
+                if (obj.type.equals("pgn")){
+                    board = new Board(null, (String) obj.getPayload());
+                    board.elsePart();
+                    System.out.println((String) obj.getPayload());
+                }
+                else
+                    board = new Board(null, null);
+            }
+
             while (true) {
                 try {
                     sendBoardToClient();
@@ -46,7 +55,6 @@ public class Game {
 
                     if(in.readObject() instanceof Message obj) {
                         if (obj.type.equals("mouseRelease")) {
-
                             SquareDto[] payload = (SquareDto[]) obj.getPayload();
                             board.setCurrPiece(board.getSquareArray()[payload[0].getX()][payload[0].getY()].getOccupyingPiece());
                             board.reactToMouseReleasedDto(payload[1]);
