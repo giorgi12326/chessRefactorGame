@@ -214,9 +214,12 @@ public class CheckmateDetector implements Serializable {
     public boolean canCapture(Map<Square,List<Piece>> poss,
                                List<Piece> threats, King k) {
         boolean capture = false;
-        for (Piece threat:threats) {
-            for (Piece defendingPiece:poss.get(threat.getSquare())) {
-                if(testMove(defendingPiece,threat.getSquare())) {
+        for (int i = 0; i < threats.size(); i++) {
+            Piece threat = threats.get(i);
+            List<Piece> defendingList = poss.get(threat.getSquare());
+            for (int j = 0; j < defendingList.size(); j++) {
+                Piece defendingPiece = defendingList.get(j);
+                if (testMove(defendingPiece, threat.getSquare())) {
                     movableSquares.add(threat.getSquare());
                     capture = true;
                 }
