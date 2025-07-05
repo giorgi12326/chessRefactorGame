@@ -1,5 +1,6 @@
 package org.example.model;
 
+import org.example.dtos.PGNMove;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -52,7 +53,7 @@ public class PGNParserTest {
 
     @Test
     public void testPGNMoveToString() {
-        PGNParser.PGNMove move = new PGNParser.PGNMove();
+        PGNMove move = new PGNMove();
         move.to = new int[]{3, 3};
         move.isWhite = true;
         move.piece = org.example.model.Rook.class;
@@ -66,7 +67,7 @@ public class PGNParserTest {
 
     @Test
     public void testPGNMoveCastleToString() {
-        PGNParser.PGNMove move = new PGNParser.PGNMove();
+        PGNMove move = new PGNMove();
 
         move.isCastleKingSide = true;
         assertEquals("O-O", move.toString());

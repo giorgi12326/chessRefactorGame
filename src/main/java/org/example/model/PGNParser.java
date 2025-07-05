@@ -1,4 +1,6 @@
 package org.example.model;
+import org.example.dtos.PGNMove;
+
 import java.util.*;
 import java.util.regex.*;
 
@@ -6,24 +8,6 @@ public class PGNParser {
 
     public static String whitePlayer;
     public static String blackPlayer;
-
-    public static class PGNMove {
-        public int[] to;
-        public boolean isWhite;
-        public String disambiguation;
-        public Class<?> piece;
-        public boolean isCapture = false;
-        public boolean isCastleKingSide = false;
-        public boolean isCastleQueenSide = false;
-        public boolean isPromotion = false;
-        public char promoteTo;
-
-        public String toString() {
-            if (isCastleKingSide) return "O-O";
-            if (isCastleQueenSide) return "O-O-O";
-            return piece + ": "  + " -> " + to + (isCapture ? " (x)" : "");
-        }
-    }
 
     public static int[] algebraicToCoords(String pos) {
         int file = pos.charAt(0) - 'a';
@@ -91,7 +75,7 @@ public class PGNParser {
                 String destination = matcher.group(3);
                 String promotion = matcher.group(5);
 
-                move.piece = piece != null ? parsePiece(piece.charAt(0)) : Pawn.class;
+                move.piece = piece != null ? piece.charAt(0) : 'P';
                 move.to = algebraicToCoords(destination);
                 move.isCapture = token.contains("x");
                 move.isPromotion = promotion != null;
@@ -105,7 +89,7 @@ public class PGNParser {
         return moves;
     }
 
-    private static Class<?> parsePiece(char c) {
+    public static Class<?> parsePiece(char c) {
         if(c == 'R')
             return Rook.class;
         else if(c == 'B')
@@ -116,6 +100,8 @@ public class PGNParser {
             return Knight.class;
         else if(c == 'Q')
             return Queen.class;
+        else if(c == 'P')
+            return Pawn.class;
         else return null;
     }
 
