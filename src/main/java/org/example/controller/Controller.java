@@ -50,7 +50,7 @@ public class Controller implements MouseListener, KeyListener, MouseMotionListen
 
     @Override
     public void keyPressed(KeyEvent e) {
-        board.reactToKeyPress(e);
+//        board.reactToKeyPress(e);
 
     }
 
