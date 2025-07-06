@@ -37,10 +37,18 @@ public class Game {
             while (true) {
                 try {
                     if(in.readObject() instanceof Message obj) {
+                        System.out.println("read");
                         if (obj.type.equals("mouseRelease")) {
                             SquareDto[] payload = (SquareDto[]) obj.getPayload();
+                            Square fromSquare = board.getSquareArray()[payload[0].getX()][payload[0].getY()];
+                            Square toSquare = board.getSquareArray()[payload[1].getX()][payload[1].getY()];
+
+                            String s = board.generateAlgebraicMove(fromSquare.getOccupyingPiece(), fromSquare, toSquare, toSquare.isOccupied());
+                            System.out.println(s);
+
                             board.setCurrPiece(board.getSquareArray()[payload[0].getX()][payload[0].getY()].getOccupyingPiece());
                             board.reactToMouseReleasedDto(payload[1]);
+
 
                             sendBoardToClient();
 

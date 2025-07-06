@@ -342,11 +342,9 @@ public class Board implements Serializable {
         view.repaint();
     }
     public void reactToMouseReleasedDto(SquareDto e) {
-        System.out.println(currPiece + " currpciec");
         if (currPiece != null) {
 
             Square sq = board[e.getX()][e.getY()];
-            System.out.println(sq.getXNum() + " " + sq.getYNum());
 
             if (releasePart(sq)) return;
         }
@@ -435,5 +433,94 @@ public class Board implements Serializable {
 
 
     public void reactToKeyPress(KeyEvent e) {
+    }
+
+    public String generateAlgebraicMove(Piece movingPiece, Square from, Square to, boolean isCapture) {
+        if (movingPiece instanceof King) {
+            int fileDiff = to.getXNum() - from.getXNum();
+            if (Math.abs(fileDiff) == 2) {
+                return (fileDiff == 2) ? "O-O" : "O-O-O";
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        char pieceLetter = 0;
+        if (!(movingPiece instanceof Pawn)) {
+            if (movingPiece instanceof Knight) pieceLetter = 'N';
+            else if (movingPiece instanceof Bishop) pieceLetter = 'B';
+            else if (movingPiece instanceof Rook) pieceLetter = 'R';
+            else if (movingPiece instanceof Queen) pieceLetter = 'Q';
+            else if (movingPiece instanceof King) pieceLetter = 'K';
+            sb.append(pieceLetter);
+        }
+        if (!(movingPiece instanceof Pawn)) {
+            List<Piece> sameTypePieces = new ArrayList<>();
+            LinkedList<Piece> pieceList = (movingPiece.getColor() == 1) ? Wpieces : Bpieces;
+            for (Piece p : pieceList) {
+                if (p == movingPiece) continue;
+                if (p.getClass().equals(movingPiece.getClass())) {
+                    List<Square> legal = p.getLegalMoves(this);
+                    if (legal.contains(to)) {
+                        sameTypePieces.add(p);
+                    }
+                }
+            }
+            if (!sameTypePieces.isEmpty()) {
+                boolean needFile = true, needRank = true;
+                char fromFile = (char) ('a' + from.getXNum());
+                char fromRank = (char) ('1' + (7 - from.getYNum()));
+                for (Piece other : sameTypePieces) {
+                    if (other.getSquare().getXNum() == from.getXNum()) {
+                        needFile = false;
+                    }
+                    if ((7 - other.getSquare().getYNum()) == (7 - from.getYNum())) {
+                        needRank = false;
+                    }
+                }
+                if (needFile) {
+                    sb.append(fromFile);
+                } else if (needRank) {
+                    sb.append(fromRank);
+                } else {
+                    sb.append(fromFile).append(fromRank);
+                }
+            }
+        }
+        if (isCapture) {
+            if (movingPiece instanceof Pawn && sb.length() == 0) {
+                char fromFile = (char) ('a' + from.getXNum());
+                sb.append(fromFile);
+            }
+            sb.append('x');
+        }
+        char destFile = (char) ('a' + to.getXNum());
+        char destRank = (char) ('1' + (7 - to.getYNum()));
+        sb.append(destFile).append(destRank);
+        if (movingPiece instanceof Pawn) {
+            int rankIdx = to.getYNum();
+            if ((movingPiece.getColor() == 1 && rankIdx == 0) || (movingPiece.getColor() == 0 && rankIdx == 7)) {
+                sb.append("=Q");
+            }
+        }
+        boolean givesCheck = false;
+        boolean givesCheckmate = false;
+        if (movingPiece.getColor() == 1) {
+            if (cmd.blackCheckMated()) {
+                givesCheckmate = true;
+            } else if (cmd.blackInCheck()) {
+                givesCheck = true;
+            }
+        } else {
+            if (cmd.whiteCheckMated()) {
+                givesCheckmate = true;
+            } else if (cmd.whiteInCheck()) {
+                givesCheck = true;
+            }
+        }
+        if (givesCheckmate) {
+            sb.append('#');
+        } else if (givesCheck) {
+            sb.append('+');
+        }
+        return sb.toString();
     }
 }
