@@ -346,7 +346,9 @@ public class Board implements Serializable {
 
             Square sq = board[e.getX()][e.getY()];
 
-            if (releasePart(sq)) return;
+            boolean b = releasePart(sq);
+            System.out.println("isvalid" + b);
+            if (b) return;
         }
 
 //        drawAttackSpots();

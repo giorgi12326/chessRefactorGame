@@ -44,13 +44,16 @@ public class Game {
                             Square toSquare = board.getSquareArray()[payload[1].getX()][payload[1].getY()];
 
                             String s = board.generateAlgebraicMove(fromSquare.getOccupyingPiece(), fromSquare, toSquare, toSquare.isOccupied());
-                            System.out.println(s);
 
                             board.setCurrPiece(board.getSquareArray()[payload[0].getX()][payload[0].getY()].getOccupyingPiece());
                             board.reactToMouseReleasedDto(payload[1]);
 
-
-                            sendBoardToClient();
+                            if(Game.didMoveWentThough){
+                                out.writeObject(new Message("pgnMove",s));
+                                out.flush();
+                            }
+                            else
+                                sendBoardToClient();
 
                         }
                         if (obj.type.equals("pgn")){
@@ -73,19 +76,8 @@ public class Game {
 
     }
 
-    private static void sendBoardToClient() throws IOException {
-//        Square[][] squareArray = board.getSquareArray();
-//        SquareDto[][] dtos = new SquareDto[8][8];
-//        for (int i = 0; i < 8; i++) {
-//            for (int j = 0; j < 8; j++) {
-//                Piece occupyingPiece = squareArray[i][j].getOccupyingPiece();
-//                if(occupyingPiece != null)
-//                    dtos[i][j] = new SquareDto(squareArray[i][j].getXNum(),'A',
-//                        PGNParser.getPieceChar(occupyingPiece.getClass()),
-//                            occupyingPiece.getColor());
-//            }
-//        }
 
+    private static void sendBoardToClient() throws IOException {
         out.writeObject(didMoveWentThough);
         out.flush();
         System.out.println("board sent!");
