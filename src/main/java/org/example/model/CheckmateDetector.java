@@ -237,7 +237,7 @@ public class CheckmateDetector implements Serializable {
         boolean blockable = false;
 
         if (threats.size() == 1) {
-            Square threatSquare = threats.getFirst().getSquare();
+            Square threatSquare = threats.get(0).getSquare();
             Square kingSquare = k.getSquare();
             Square[][] boardArray = board.getSquareArray();
             if (kingSquare.getXNum() == threatSquare.getXNum()) {

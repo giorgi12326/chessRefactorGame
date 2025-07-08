@@ -32,7 +32,6 @@ public class Board implements Serializable {
     // Logical and graphical representations of board
 	private final Square[][] board;
     private final GameWindow gameWindow;
-    
     // List of pieces and whether they are movable
     public final LinkedList<Piece> Bpieces;
     public final LinkedList<Piece> Wpieces;
@@ -87,7 +86,7 @@ public class Board implements Serializable {
         boolean shouldTryToCheckParsed = true;
         if(PGN != null) {
             try {
-                moveList = PGNParser.parseInList(PGNParser.parsePGN(PGN).getFirst());
+                moveList = PGNParser.parseInList(PGNParser.parsePGN(PGN).get(0));
                 System.out.println(moveList);
             }
             catch(NoSuchElementException e){
@@ -171,7 +170,7 @@ public class Board implements Serializable {
         if(gameWindow == null && moveList != null) {
 
             while (!moveList.isEmpty() &&
-                    moveList.getFirst().to != null) {
+                    moveList.get(0).to != null) {
                 if(!elsePart2())
                     isValid = false;
 
@@ -264,7 +263,7 @@ public class Board implements Serializable {
             return null;
         } else if (size == 1) {
             captureLogic(nextMove);
-            Piece first = list.getFirst();
+            Piece first = list.get(0);
             SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[1], nextMove.to[0])};
             first.move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
             cmd.update();
@@ -286,7 +285,7 @@ public class Board implements Serializable {
                     } else {
                         System.out.println("1231231231ffgf");
                         captureLogic(nextMove);
-                        Piece first = list1.getFirst();
+                        Piece first = list1.get(0);
                         SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[1], nextMove.to[0])};
                         first.move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
                         cmd.update();
@@ -301,7 +300,7 @@ public class Board implements Serializable {
                     }
                     else {
                         captureLogic(nextMove);
-                        Piece first = list1.getFirst();
+                        Piece first = list1.get(0);
                         SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[1], nextMove.to[0])};
                         first.move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
                         cmd.update();
@@ -319,7 +318,7 @@ public class Board implements Serializable {
                     return null;                    }
                 else {
                     captureLogic(nextMove);
-                    Piece first = list1.getFirst();
+                    Piece first = list1.get(0);
                     SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[1], nextMove.to[0])};
                     first.move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
                     cmd.update();
@@ -336,7 +335,7 @@ public class Board implements Serializable {
 
         while(!moveList.isEmpty()) {
 
-            PGNMove nextMove = moveList.removeFirst();
+            PGNMove nextMove = moveList.remove(0);
             if (nextMove == null) {
                 break;
 
@@ -376,7 +375,7 @@ public class Board implements Serializable {
                 }
                 catch (Exception e){
                     return false;
-                }                list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                }                list.get(0).move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
             } else {
                 String disambiguation = nextMove.disambiguation;
                 if (disambiguation.isEmpty()) {
@@ -399,7 +398,7 @@ public class Board implements Serializable {
                             }
                             catch (Exception e){
                                 return false;
-                            }                            list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                            }                            list1.get(0).move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
                         }
                     } else if (c >= '1' && c <= '8') {
                         List<Piece> list1 = list.stream().filter(t -> t.getSquare().getYNum() == 7 - (c - '1')).toList();
@@ -415,7 +414,7 @@ public class Board implements Serializable {
                             catch (Exception e){
                                 return false;
                             }
-                            list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                            list1.get(0).move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
                         }
                     }
                 } else {
@@ -434,7 +433,7 @@ public class Board implements Serializable {
                         catch (Exception e){
                             return false;
                         }
-                        list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                        list1.get(0).move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
                     }
 
                 }

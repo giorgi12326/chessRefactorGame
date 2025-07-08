@@ -3,6 +3,7 @@ package org.example.model;
 import org.example.dtos.Message;
 import org.example.dtos.PGNMove;
 import org.example.dtos.SquareDto;
+import org.example.util.PGNDatabase;
 import org.example.view.GameWindow;
 import org.example.view.StartMenu;
 
@@ -12,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.List;
 
 public class Game {
@@ -21,8 +23,12 @@ public class Game {
     static ObjectInputStream in;
     static ObjectOutputStream out;
     public static boolean didMoveWentThough = false;
-    
     public static void main(String[] args) {
+        try {
+            PGNDatabase.init();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
             System.out.println("Server listening...");
@@ -38,6 +44,15 @@ public class Game {
             while (true) {
                 try {
                     if(in.readObject() instanceof Message obj) {
+                        if (obj.type.equals("savePGN")) {
+                            String fullPgn = (String) obj.getPayload();
+                            try {
+                                PGNDatabase.savePGN(fullPgn);
+                            } catch (SQLException sqe) {
+                                sqe.printStackTrace();
+                            }
+                            out.flush();
+                        }
                         if (obj.type.equals("mouseRelease")) {
                             SquareDto[] payload = (SquareDto[]) obj.getPayload();
                             Square fromSquare = board.getSquareArray()[payload[0].getX()][payload[0].getY()];
