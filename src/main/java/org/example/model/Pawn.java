@@ -41,7 +41,6 @@ public class Pawn extends Piece {
                 else{
                     board.Wpieces.add(p);
                 }
-
             }
         }
         enPassant = 0;

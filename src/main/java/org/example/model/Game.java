@@ -58,8 +58,19 @@ public class Game {
                         }
                         if (obj.type.equals("pgn")){
                             SquareDto[] squareDtos = board.elsePart((PGNMove) obj.getPayload());
-                            out.writeObject(squareDtos);
-                            out.flush();
+                            System.out.println("kaka");
+                            if(Board.castleString != null && (Board.castleString.equals("O-O") || Board.castleString.equals("O-O-O"))   ){
+                                out.writeObject(new Message("castleMove",Board.castleString));
+                                out.flush();
+                                Board.castleString = null;
+                            }else {
+                                System.out.println("--------------------------");
+                                System.out.println(squareDtos[0].getX() + " " + squareDtos[0].getY());
+                                System.out.println(squareDtos[1].getX() + " " + squareDtos[1].getY());
+
+                                out.writeObject(new Message("squareArr",squareDtos));
+                                out.flush();
+                            }
                         }
                     }
 

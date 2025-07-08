@@ -50,6 +50,7 @@ public class Board implements Serializable {
     List<PGNMove> moveList;
     public String whiteName;
     public String blackName;
+    public static String castleString;
 
 
     @Override
@@ -61,9 +62,13 @@ public class Board implements Serializable {
                 if(board[i][j].getOccupyingPiece() instanceof Pawn)
                     System.out.print( "P ");
                 if(board[i][j].getOccupyingPiece() instanceof Knight)
-                    System.out.print( "Z ");
+                    System.out.print( "K ");
+                if(board[i][j].getOccupyingPiece() instanceof Bishop)
+                    System.out.print( "B ");
                 if(board[i][j].getOccupyingPiece() instanceof Queen)
                     System.out.print( "Q ");
+                if(board[i][j].getOccupyingPiece() instanceof Rook)
+                    System.out.print( "R ");
                 if(board[i][j].getOccupyingPiece() ==null)
                     System.out.print("0 ");
             }
@@ -213,7 +218,6 @@ public class Board implements Serializable {
 
     public SquareDto[] elsePart(PGNMove nextMove) {
         if (nextMove == null) {
-            gameWindow.incorrectPgnMessage("Error, No es Left");
             return null;
         }
 
@@ -224,7 +228,9 @@ public class Board implements Serializable {
                     getSquareArray()[color * 7][4].getOccupyingPiece() instanceof King &&
                     getSquareArray()[color * 7][4].getOccupyingPiece().getColor() == color)
                 getSquareArray()[color * 7][4].getOccupyingPiece().move(getSquareArray()[color * 7][6]);
-            return null;//TODO
+            cmd.update();
+            castleString = "O-O";
+            return new SquareDto[]{new SquareDto(4,color*7), new SquareDto(6,color*7)};
 
         } else if (nextMove.isCastleQueenSide) {
             if (getSquareArray()[color * 7][4].isOccupied() &&
@@ -232,38 +238,35 @@ public class Board implements Serializable {
                     getSquareArray()[color * 7][4].getOccupyingPiece().getColor() == color) {
                 getSquareArray()[color * 7][4].getOccupyingPiece().move(getSquareArray()[color * 7][2]);
             }
-            return null;
+            cmd.update();
+            castleString = "O-O-O";
+            return new SquareDto[]{new SquareDto(4,color*7), new SquareDto(2,color*7)};
         }
         List<Piece> list;
-
         if (nextMove.isWhite) {
             list = cmd.wMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> PGNParser.parsePiece(nextMove.piece).isInstance(t)).toList();
         } else {
             list = cmd.bMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> PGNParser.parsePiece(nextMove.piece).isInstance(t)).toList();
         }
-
+        System.out.println(this);
         int size = list.size();
         if (size == 0) {
             System.out.println("NOT VALID");
-            gameWindow.incorrectPgnMessage("Error, That piece cant move to specified Spot");
+            cmd.update();
             return null;
         } else if (size == 1) {
             captureLogic(nextMove);
-            System.out.println(list);
             Piece first = list.getFirst();
             System.out.println(first.getSquare().getXNum());
             System.out.println(first.getSquare().getYNum());
-            System.out.println(nextMove.to[0]);
-            System.out.println(nextMove.to[1]);
-            SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[0], nextMove.to[1])};
+            SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[1], nextMove.to[0])};
             first.move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+            cmd.update();
             return squareDtos;
         } else {
             String disambiguation = nextMove.disambiguation;
             if (disambiguation.isEmpty()) {
                 System.out.println("NOT VALID");
-
-                gameWindow.incorrectPgnMessage("cant resolve ambiguity");
                 return null;
             } else if (disambiguation.length() == 1) {
                 char c = disambiguation.charAt(0);
@@ -272,29 +275,35 @@ public class Board implements Serializable {
                     List<Piece> list1 = list.stream().filter(t -> t.getSquare().getXNum() == c - 'a').toList();
                     if (list1.isEmpty()) {
                         System.out.println("NOT VALID");
-
-                        gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on " + c);
                         return null;
 
                     } else {
+                        System.out.println("1231231231ffgf");
                         captureLogic(nextMove);
                         Piece first = list1.getFirst();
+                        SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[1], nextMove.to[0])};
                         first.move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
-                        return new SquareDto[]{new SquareDto(first.getSquare().getX(), first.getSquare().getY()), new SquareDto(nextMove.to[0], nextMove.to[1])};
+                        cmd.update();
+                        return squareDtos;
                     }
                 } else if (c >= '1' && c <= '8') {
                     List<Piece> list1 = list.stream().filter(t -> t.getSquare().getYNum() == 7 - (c - '1')).toList();
+                    System.out.println(list1 + " asldkjasldkasjldk");
                     if (list1.isEmpty()) {
                         System.out.println("NOT VALID");
-
-                        gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on " + c);
                         return null;
                     }
                     else {
                         captureLogic(nextMove);
                         Piece first = list1.getFirst();
+                        System.out.println(first.getSquare().getXNum() + " alo");
+                        System.out.println(first.getSquare().getYNum() + " alo");
+                        System.out.println(nextMove.to + " alo");
+                        System.out.println(first.getSquare().getYNum() + " alo");
+                        SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[1], nextMove.to[0])};
                         first.move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
-                        return new SquareDto[]{new SquareDto(first.getSquare().getX(), first.getSquare().getY()), new SquareDto(nextMove.to[0], nextMove.to[1])};
+                        cmd.update();
+                        return squareDtos;
                     }
                 }
             } else {
@@ -305,13 +314,14 @@ public class Board implements Serializable {
                 if (list1.isEmpty()) {
                     System.out.println("NOT VALID");
 
-                    gameWindow.incorrectPgnMessage("Error, cant resolve ambiguity on ");
                     return null;                    }
                 else {
                     captureLogic(nextMove);
                     Piece first = list1.getFirst();
+                    SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[1], nextMove.to[0])};
                     first.move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
-                    return new SquareDto[]{new SquareDto(first.getSquare().getX(), first.getSquare().getY()), new SquareDto(nextMove.to[0], nextMove.to[1])};
+                    cmd.update();
+                    return squareDtos;
                 }
 
             }
@@ -438,6 +448,8 @@ public class Board implements Serializable {
     }
 
     public String generateAlgebraicMove(Piece movingPiece, Square from, Square to, boolean isCapture) {
+        if(movingPiece == null)
+            return "NoPIECE";
         if (movingPiece instanceof King) {
             int fileDiff = to.getXNum() - from.getXNum();
             if (Math.abs(fileDiff) == 2) {

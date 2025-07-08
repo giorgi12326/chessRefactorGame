@@ -29,7 +29,6 @@ public class PGNParser {
         whitePlayer = extractTagValue(pgn, "White");
         blackPlayer = extractTagValue(pgn, "Black");
 
-
         List<String> result = new ArrayList<>();
         System.out.println(games.size());
         for (String iPgn: games) {
