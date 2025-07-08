@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class Game {
     public static GameWindow gameWindow;
@@ -37,7 +38,6 @@ public class Game {
             while (true) {
                 try {
                     if(in.readObject() instanceof Message obj) {
-                        System.out.println("read");
                         if (obj.type.equals("mouseRelease")) {
                             SquareDto[] payload = (SquareDto[]) obj.getPayload();
                             Square fromSquare = board.getSquareArray()[payload[0].getX()][payload[0].getY()];
@@ -64,12 +64,18 @@ public class Game {
                                 out.flush();
                                 Board.castleString = null;
                             }else {
-                                System.out.println("--------------------------");
-                                System.out.println(squareDtos[0].getX() + " " + squareDtos[0].getY());
-                                System.out.println(squareDtos[1].getX() + " " + squareDtos[1].getY());
-
                                 out.writeObject(new Message("squareArr",squareDtos));
                                 out.flush();
+                            }
+                        }
+                        if(obj.type.equals("Multiple")){
+                            List<String> payload = (List<String>) (obj.getPayload());
+                            for(String str: payload) {
+                                board = new Board(null, str);
+                                board.elsePart2();
+                                out.writeObject(new Message("valid?", board.isValid));
+
+                                System.out.println("senenen");
                             }
                         }
                     }

@@ -52,6 +52,9 @@ public class Board implements Serializable {
     public String blackName;
     public static String castleString;
 
+    boolean isValid = true;
+
+
 
     @Override
     public String toString() {
@@ -166,11 +169,16 @@ public class Board implements Serializable {
         
         cmd = new CheckmateDetector(this, Wpieces, Bpieces, wk, bk);
         if(gameWindow == null && moveList != null) {
+
             while (!moveList.isEmpty() &&
                     moveList.getFirst().to != null) {
-                reactToMousePress(null);
+                if(!elsePart2())
+                    isValid = false;
+
             }
+            if(isValid)
             System.out.println("valid");
+            else System.out.println("NOVALID");
         }
     }
 
@@ -212,7 +220,7 @@ public class Board implements Serializable {
             System.out.println(currPiece);
         }
         else{
-//            elsePart();
+            elsePart2();
         }
     }
 
@@ -257,8 +265,6 @@ public class Board implements Serializable {
         } else if (size == 1) {
             captureLogic(nextMove);
             Piece first = list.getFirst();
-            System.out.println(first.getSquare().getXNum());
-            System.out.println(first.getSquare().getYNum());
             SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[1], nextMove.to[0])};
             first.move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
             cmd.update();
@@ -296,10 +302,6 @@ public class Board implements Serializable {
                     else {
                         captureLogic(nextMove);
                         Piece first = list1.getFirst();
-                        System.out.println(first.getSquare().getXNum() + " alo");
-                        System.out.println(first.getSquare().getYNum() + " alo");
-                        System.out.println(nextMove.to + " alo");
-                        System.out.println(first.getSquare().getYNum() + " alo");
                         SquareDto[] squareDtos = {new SquareDto(first.getSquare().getXNum(), first.getSquare().getYNum()), new SquareDto(nextMove.to[1], nextMove.to[0])};
                         first.move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
                         cmd.update();
@@ -329,6 +331,118 @@ public class Board implements Serializable {
         cmd.update();
 
         return null;
+    }
+    public boolean elsePart2() {
+
+        while(!moveList.isEmpty()) {
+
+            PGNMove nextMove = moveList.removeFirst();
+            if (nextMove == null) {
+                break;
+
+            }
+
+            int color = nextMove.isWhite ? 1 : 0;
+
+            if (nextMove.isCastleKingSide) {
+                if (getSquareArray()[color * 7][4].isOccupied() &&
+                        getSquareArray()[color * 7][4].getOccupyingPiece() instanceof King &&
+                        getSquareArray()[color * 7][4].getOccupyingPiece().getColor() == color)
+                    getSquareArray()[color * 7][4].getOccupyingPiece().move(getSquareArray()[color * 7][6]);
+                continue;
+
+            } else if (nextMove.isCastleQueenSide) {
+                if (getSquareArray()[color * 7][4].isOccupied() &&
+                        getSquareArray()[color * 7][4].getOccupyingPiece() instanceof King &&
+                        getSquareArray()[color * 7][4].getOccupyingPiece().getColor() == color) {
+                    getSquareArray()[color * 7][4].getOccupyingPiece().move(getSquareArray()[color * 7][2]);
+                }
+                continue;
+            }
+            List<Piece> list;
+
+            if (nextMove.isWhite) {
+                list = cmd.wMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> PGNParser.parsePiece(nextMove.piece).isInstance(t)).toList();
+            } else {
+                list = cmd.bMoves.get(getSquareArray()[nextMove.to[0]][nextMove.to[1]]).stream().filter(t -> PGNParser.parsePiece(nextMove.piece).isInstance(t)).toList();
+            }
+            int size = list.size();
+            if (size == 0) {
+                System.out.println("NOT VALID");
+                return false;
+            } else if (size == 1) {
+                try {
+                    captureLogic(nextMove);
+                }
+                catch (Exception e){
+                    return false;
+                }                list.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+            } else {
+                String disambiguation = nextMove.disambiguation;
+                if (disambiguation.isEmpty()) {
+                    System.out.println("NOT VALID");
+
+                    return false;
+                } else if (disambiguation.length() == 1) {
+                    char c = disambiguation.charAt(0);
+                    if (c >= 'a' && c <= 'h') {
+
+                        List<Piece> list1 = list.stream().filter(t -> t.getSquare().getXNum() == c - 'a').toList();
+                        if (list1.isEmpty()) {
+                            System.out.println("NOT VALID");
+
+                            return false;
+
+                        } else {
+                            try {
+                                captureLogic(nextMove);
+                            }
+                            catch (Exception e){
+                                return false;
+                            }                            list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                        }
+                    } else if (c >= '1' && c <= '8') {
+                        List<Piece> list1 = list.stream().filter(t -> t.getSquare().getYNum() == 7 - (c - '1')).toList();
+                        if (list1.isEmpty()) {
+                            System.out.println("NOT VALID");
+
+                            return false;
+                        }
+                        else {
+                            try {
+                                captureLogic(nextMove);
+                            }
+                            catch (Exception e){
+                                return false;
+                            }
+                            list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                        }
+                    }
+                } else {
+                    List<Piece> list1 = list.stream()
+                            .filter(t -> t.getSquare().getXNum() == disambiguation.charAt(0) - 'a')
+                            .filter(t -> t.getSquare().getYNum() == 7 - (disambiguation.charAt(1) - '1'))
+                            .toList();
+                    if (list1.isEmpty()) {
+                        System.out.println("NOT VALID");
+                        return false;
+                    }
+                    else {
+                        try {
+                            captureLogic(nextMove);
+                        }
+                        catch (Exception e){
+                            return false;
+                        }
+                        list1.getFirst().move(getSquareArray()[nextMove.to[0]][nextMove.to[1]]);
+                    }
+
+                }
+            }
+            cmd.update();
+        }
+        return true;
+
     }
 
     private void captureLogic(PGNMove nextMove) {

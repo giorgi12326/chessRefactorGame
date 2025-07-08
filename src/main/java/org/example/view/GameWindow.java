@@ -219,12 +219,6 @@ public class GameWindow implements Serializable {
         
         return buttons;
     }
-    public void incorrectPgnMessage(String message){
-        JOptionPane.showMessageDialog(gameWindow,
-                message,
-                "Warning!",
-                JOptionPane.PLAIN_MESSAGE);
-    }
     
     public void checkmateOccurred (int c) {
         if (c == 0) {
